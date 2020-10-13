@@ -65,7 +65,7 @@ matplotlibを用いたグラフ描画でデータの可視化も実現。
 
 
 
-#### matplotlibによるグラフ描画例
+## matplotlibによるグラフ描画例
 
 ![mpl2](https://user-images.githubusercontent.com/72479111/95816558-605f2d00-0d5a-11eb-9c0f-e5f0afc24e42.jpg)
 
