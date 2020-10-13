@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'arts/exhibitions/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<h6><img src="/static/image/exhibition.png" width="16px" height="16px" alt="">{{ exhibitions.count }} exhibitions</h6>
+<div class="upper-box">
+    <ul class="row flex-wrap">
+        {% for exhibition in exhibitions %}
+        <li class="item col-sm-6">
+            <a href="/arts/exhibitions/{{exhibition.id}}" class="row">
+                <div class="left col-4 col-sm-12 col-md-4">
+                    <figure class="image">
+                        <img src="{{exhibition.image.url}}" alt="{{exhibition.name}}">
+                    </figure>
+                </div>
+                <div class="right col-8 col-sm-12 col-md-8">
+                    <h2>{{exhibition.name_en}}</h2>
+                    <div class="meta">
+                        <h5>{{exhibition.museum.name_en }}</h5>
+                        <p>{{exhibition.open_at|date:"j/m/Y" }} － {{exhibition.close_at|date:"j/m/Y" }}</p>
+                    </div>
+
+                    {% if exhibition.description_en %}
+                    <p>{{exhibition.description_en|linebreaks|slice:":120" }}...</p>
+                    {% else %}
+                    <p>{{exhibition.description|linebreaks|slice:":120" }}...</p>
+                    {% endif %}
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+
+</div>
+
+</div>
+
+{% endblock %}

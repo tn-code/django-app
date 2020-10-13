@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'en/term/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<div>
+    <div class="paraphrase">
+        <div class="synonym-box">
+            <h5 class="synonyms-hl">Paraphrase</h5>
+            <table class="synonyms-list">
+                {% for basic in basics %}
+                <tr>
+                    <th><a href="/en/terms/{{ basic.id }}">{{ basic.name }}</a></th>
+                    <td></td>
+
+                    {% for synonym in basic.synonyms.all %}
+                    <td>{{ synonym.name }}</td>
+                    {% endfor %}
+                    {% for synonym in basic.terms_related.all %}
+                    <td>{{ synonym.name }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+
+
+            </table>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

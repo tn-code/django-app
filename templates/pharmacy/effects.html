@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pharmacy/ingredients/style.scss' %}">
+{% endblock %}
+{% block title %}Pharmacy | MYAPP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+<h4>{{effect.name}}</h4>
+<div class="content-wrap">
+    {% for effect in effects %}
+    <h4 class="effect-title">{{effect.name}}</h4>
+    <ul class="medicine-list">
+
+        {% for ingredient in effect.ingredients.all %}
+        <li class="medicine-item row align-items-center">
+            <a href="{% url 'pharmacy:ingredient' pk=ingredient.id%}">
+                {{forloop.counter }}. {{ ingredient.name }}
+            </a>
+            {% if ingredient.effects.count > 0 %}－
+            {% for effect in ingredient.effects.all%}
+            <span class="effects">{{effect.name}}</span>
+            {%endfor%}
+            {% endif %}
+            <span class="en">{{ingredient.name_en}}</span>
+
+
+        </li>
+        {% endfor %}
+    </ul>
+    {% endfor %}
+
+</div>
+{% endblock %}

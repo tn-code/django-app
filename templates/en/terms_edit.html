@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'en/terms_add/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<h3>Edit</h3>
+<form action="" method="post" enctype="multipart/form-data" class="row">
+    <section class="col-md-3">
+        {{ form.as_p }}
+
+        {{ definition_formset.management_form }}
+
+        {% for definition_form in definition_formset %}
+        <h5>Definition {{ forloop.counter }}</h5>
+        {{ definition_form.as_p }}
+        {% endfor %}
+
+        <label for="genre">Genre</label>
+        <select name="genre_pk" id="genre">
+            <option selected="true" disabled="disabled">--- Select a Term ---</option>
+            {% for genre in genres %}
+            <option value="{{ genre.id }}">{{ genre.name }}</option>
+            {% endfor %}
+        </select>
+        <label for="occasion">Occasion</label>
+        <select name="occasion_pk" id="occasion">
+            <option selected="true" disabled="disabled">--- Select a Term ---</option>
+            {% for occasion in occasions %}
+            <option value="{{ occasion.id }}">{{ occasion.name }}</option>
+            {% endfor %}
+        </select>
+
+    </section>
+
+    <section class="col-md-6 column sentence">
+        <div class="row">
+            {{ sentence_formset.management_form }}
+            {% for sentence_form in sentence_formset %}
+
+            <div class="col-lg-6">
+                <h5>Sentence {{ forloop.counter }}</h5>
+                {{ sentence_form.as_p }}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="col-md-3 column synonym">
+        <h5>Synonyms</h5>
+        <div class="row synonyms-inner">
+            <select multiple name="synonym_pks" size="20" class="col-12">
+                <option selected="true" disabled="disabled">--- Select a Term ---</option>
+                {% for synonym in synonyms %}
+                <option value="{{ synonym.id }}">{{ synonym.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+    </section>
+
+
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+
+
+
+{% endblock %}

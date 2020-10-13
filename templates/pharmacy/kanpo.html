@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pharmacy/medicines/style.scss' %}">
+{% endblock %}
+{% block title %}Pharmacy | MYAPP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="content-wrap">
+
+
+    <a href="{% url 'pharmacy:property' pk=20 %}">一覧</a>
+
+    <div class="medicine_tabs">
+        <ul class="nav nav-tabs">
+
+            <li class="nav-item active">
+                <a class="nav-link active show" href="" aria-controls="tab_{{ctg.id}}" aria-selected="false">漢方薬</a>
+
+                <a class="nav-link" href="" aria-controls="tab_{{ctg.id}}" aria-selected="false">生薬</a>
+
+            </li>
+
+        </ul>
+
+    </div>
+    <ul class="medicine-list list-{{category.id}} row">
+
+        {% for medicine in kanpoes %}
+        <li class=" medicine-item col-sm-2">
+            <div class="item-inner row justify-content-between">
+                <a class="cols" href="{% url 'pharmacy:ingredient' pk=medicine.id%}">
+                    {% if medicine.image %}
+                    <img src="{{ medicine.image.url }}" alt="">
+                    {% endif %}
+                    <h4 class="product-name">{{ medicine.name }}</h4>
+                </a>
+
+                <ul class="ingredient-list">
+                    {% for ingredient in medicine.relationships.all %}
+                    <li class="ingredient-item">
+                        {% if ingredient.id == 20 or ingredient.id == 31 or ingredient.id == 49  %}
+                        <a href="{% url 'pharmacy:ingredient' pk=ingredient.id %}" class="check-herb">
+                            {% else %}
+                            <a href="{% url 'pharmacy:ingredient' pk=ingredient.id %}">
+                                {% endif %}
+                                {{ ingredient.name}}
+                            </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <p class="col">
+                            {% if medicine.classification == "1" %}
+                            <span class="class first">第1類医薬品</span>
+                            {% elif medicine.classification == "D2" %}
+                            <span class="class d-second">第<span class="designated">2</span>類医薬品</span>
+                            {% elif medicine.classification == "2" %}
+                            <span class="class second">第2類医薬品</span>
+                            {% elif medicine.classification == "3" %}
+                            <span class="class third">第3類医薬品</span>
+                            {% elif medicine.classification == "DQ" %}
+                            <span class="class d-quasi">指定医薬部外品</span>
+                            {% elif medicine.classification == "Q" %}
+                            <span class="class quasi">医薬部外品</span>
+                            {% elif medicine.classification == "P" %}
+
+                            <span class="class prescription">医療用医薬品</span>
+                            {% elif medicine.classification == "I" %}
+
+                            <span class="class instruction">要指導医薬品</span>
+                            {% elif medicine.classification == "A" %}
+
+                            <span class="class animal">動物用医薬品</span>
+                            {% endif %}
+                </p>
+
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+</div>
+{% endblock %}

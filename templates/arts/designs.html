@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'arts/designs/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<a href="http://design-library.jp/" target="_blank" rel="noopener noreferrer">BANNER LIBRARY</a>
+
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    {% for category in categories %}
+    <li class="nav-item active">
+        {% if forloop.counter == 1 %}
+        <a class="nav-link active show" id="category-{{category.id}}-tab" data-toggle="tab" href="#category-{{category.id}}" role="tab" aria-controls="tab_{{category.id}}" aria-selected="false">{{category.name}}</a>
+        {% else %}
+        <a class="nav-link" id="category-{{category.id}}-tab" data-toggle="tab" href="#category-{{category.id}}" role="tab" aria-controls="tab_{{category.id}}" aria-selected="false">{{category.name}}</a>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+
+
+<h6><img src="/static/image/exhibition.png" width="16px" height="16px" alt="">{{ designs.count }} designs</h6>
+<div class="upper-box">
+    <ul class="row flex-wrap">
+        {% for design in designs %}
+        <li class="item col-sm-2">
+            <a data-toggle="modal" data-target="#image_{{design.id}}" href="/arts/designs/{{design.id}}" class="row">
+                <div class="left">
+                    <figure class="image">
+                        <img src="{{design.image.url}}" alt="{{design.name}}">
+                    </figure>
+                </div>
+            </a>
+
+        </li>
+        <div class="modal fade" id="image_{{design.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+
+                    <div class="modal-body mx-auto mw-100">
+                        <img src="{{design.image.url}}" alt="">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times; CLOSE</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+</div>
+
+</div>
+
+{% endblock %}

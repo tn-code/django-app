@@ -1,0 +1,456 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'news/index/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+
+{% endblock %}
+{% block content %}
+
+{% include "components/alert.html" %}
+
+
+
+<ul class="nav nav-tabs main-tab" id="myTab1" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="us-tab" data-toggle="tab" href="#us" role="tab" aria-controls="us" aria-selected="true">United States</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="gb-tab" data-toggle="tab" href="#gb" role="tab" aria-controls="gb" aria-selected="false">United Kingdom</a>
+    </li>
+
+</ul>
+<div class="tab-content main-tab-content" id="myTabContent1">
+    <div class="tab-pane fade show active" id="us" role="tabpanel" aria-labelledby="us-tab">
+        <ul class="news row">
+            <li class="left col-xl-7">
+                <ul class="column">
+                    <li class="first">
+                        <a href="{{ articles_us.0.url}}" class="column" target="_blank" rel="noopener noreferrer">
+
+                            <div class="image">
+                                <img src=" {{ articles_us.0.urlToImage}}" alt="">
+                            </div>
+                            <div class="content">
+                                <h3 class="lg">{{ articles_us.0.title }}</h3>
+                                <p class="lg">{{ articles_us.0.description|slice:"260" }}</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="lower">
+                        <ul class="row">
+                            <li class="col-sm-4">
+                                <a href="{{ articles_us.1.url}}" class="column" target="_blank" rel="noopener noreferrer">
+                                    <div class="image">
+                                        <img src="{{ articles_us.1.urlToImage}}" alt="">
+                                    </div>
+                                    <h3 class="md">{{ articles_us.1.title }}</h3>
+                                </a>
+                            </li>
+                            <li class="col-sm-4">
+                                <a href="{{ articles_us.2.url}}" class="column" target="_blank" rel="noopener noreferrer">
+                                    <div class="image">
+                                        <img src="{{ articles_us.2.urlToImage}}" alt="">
+                                    </div>
+                                    <h3 class="md">{{ articles_us.2.title }}</h3>
+                                </a>
+                            </li>
+                            <li class="col-sm-4">
+                                <a href="{{ articles_us.3.url}}" class="column" target="_blank" rel="noopener noreferrer">
+                                    <div class="image">
+                                        <img src="{{ articles_us.3.urlToImage}}" alt="">
+                                    </div>
+                                    <h3 class="md">{{ articles_us.3.title }}</h3>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li class="right col-xl-5">
+                <ul class="row">
+                    <li class="col-sm-6">
+                        <a href="{{ articles_us.4.url}}" class="column" target="_blank" rel="noopener noreferrer">
+                            <div>
+                                <div class="image">
+                                    <img src="{{ articles_us.4.urlToImage}}" alt="">
+                                </div>
+                                <h3 class="md">{{ articles_us.4.title }}</h3>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="col-sm-6">
+                        <a href="{{ articles_us.5.url}}" class="column" target="_blank" rel="noopener noreferrer">
+                            <div>
+                                <div class="image">
+                                    <img src="{{ articles_us.5.urlToImage}}" alt="">
+                                </div>
+                                <h3 class="md">{{ articles_us.5.title }}</h3>
+                            </div>
+                        </a>
+                    </li>
+                    <div class="col-12 mini-posts">
+                        <li class="sm-item">
+                            <a href="{{ articles_us.6.url}}" target="_blank" rel="noopener noreferrer">
+                                <div>
+                                    <h3 class="sm">{{ articles_us.6.title }}</h3>
+                                    <p>{{ articles_us.6.description }}</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="sm-item">
+                            <a href="{{ articles_us.7.url}}" target="_blank" rel="noopener noreferrer">
+                                <div>
+                                    <h3 class="sm">{{ articles_us.7.title }}</h3>
+                                    <p>{{ articles_us.7.description }}</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="sm-item">
+                            <a href="{{ articles_us.8.url}}" target="_blank" rel="noopener noreferrer">
+                                <div>
+                                    <h3 class="sm">{{ articles_us.8.title }}</h3>
+                                    <p>{{ articles_us.8.description }}</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="sm-item">
+                            <a href="{{ articles_us.9.url}}" target="_blank" rel="noopener noreferrer">
+                                <div>
+                                    <h3 class="sm">{{ articles_us.9.title }}</h3>
+                                    <p>{{ articles_us.9.description }}</p>
+                                </div>
+                            </a>
+                        </li>
+                    </div>
+                </ul>
+            </li>
+        </ul>
+
+
+    </div>
+    <div class="tab-pane fade" id="gb" role="tabpanel" aria-labelledby="gb-tab">
+        <ul class="news row">
+            <li class="left col-xl-7">
+                <ul class="column">
+                    <li class="first">
+                        <a href="{{ articles_gb.0.url}}" class="column" target="_blank" rel="noopener noreferrer">
+
+                            <div class="image">
+                                <img src=" {{ articles_gb.0.urlToImage}}" alt="">
+                            </div>
+                            <div class="content">
+                                <h3 class="lg">{{ articles_gb.0.title }}</h3>
+                                <p class="lg">{{ articles_gb.0.description|slice:"260" }}</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="lower">
+                        <ul class="row">
+                            <li class="col-sm-4">
+                                <a href="{{ articles_gb.1.url}}" class="column" target="_blank" rel="noopener noreferrer">
+                                    <div class="image">
+                                        <img src="{{ articles_gb.1.urlToImage}}" alt="">
+                                    </div>
+                                    <h3 class="md">{{ articles_gb.1.title }}</h3>
+                                </a>
+                            </li>
+                            <li class="col-sm-4">
+                                <a href="{{ articles_gb.2.url}}" class="column" target="_blank" rel="noopener noreferrer">
+                                    <div class="image">
+                                        <img src="{{ articles_gb.2.urlToImage}}" alt="">
+                                    </div>
+                                    <h3 class="md">{{ articles_gb.2.title }}</h3>
+                                </a>
+                            </li>
+                            <li class="col-sm-4">
+                                <a href="{{ articles_gb.3.url}}" class="column" target="_blank" rel="noopener noreferrer">
+                                    <div class="image">
+                                        <img src="{{ articles_gb.3.urlToImage}}" alt="">
+                                    </div>
+                                    <h3 class="md">{{ articles_gb.3.title }}</h3>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li class="right col-xl-5">
+                <ul class="row">
+                    <li class="col-sm-6">
+                        <a href="{{ articles_gb.4.url}}" class="column" target="_blank" rel="noopener noreferrer">
+                            <div>
+                                <div class="image">
+                                    <img src="{{ articles_gb.4.urlToImage}}" alt="">
+                                </div>
+                                <h3 class="md">{{ articles_gb.4.title }}</h3>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="col-sm-6">
+                        <a href="{{ articles_gb.5.url}}" class="column" target="_blank" rel="noopener noreferrer">
+                            <div>
+                                <div class="image">
+                                    <img src="{{ articles_gb.5.urlToImage}}" alt="">
+                                </div>
+                                <h3 class="md">{{ articles_gb.5.title }}</h3>
+                            </div>
+                        </a>
+                    </li>
+                    <div class="col-12 mini-posts">
+                        <li class="col-12 sm-item">
+                            <a href="{{ articles_gb.6.url}}" target="_blank" rel="noopener noreferrer">
+                                <div>
+                                    <h3 class="sm">{{ articles_gb.6.title }}</h3>
+                                    <p>{{ articles_gb.6.description }}</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="col-12 sm-item">
+                            <a href="{{ articles_gb.7.url}}" target="_blank" rel="noopener noreferrer">
+                                <div>
+                                    <h3 class="sm">{{ articles_gb.7.title }}</h3>
+                                    <p>{{ articles_gb.7.description }}</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="col-12 sm-item">
+                            <a href="{{ articles_gb.8.url}}" target="_blank" rel="noopener noreferrer">
+                                <div>
+                                    <h3 class="sm">{{ articles_gb.8.title }}</h3>
+                                    <p>{{ articles_gb.8.description }}</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="col-12 sm-item">
+                            <a href="{{ articles_gb.9.url}}" target="_blank" rel="noopener noreferrer">
+                                <div>
+                                    <h3 class="sm">{{ articles_gb.9.title }}</h3>
+                                    <p>{{ articles_gb.9.description }}</p>
+                                </div>
+                            </a>
+                        </li>
+                    </div>
+                </ul>
+            </li>
+        </ul>
+
+
+
+    </div>
+
+</div>
+
+
+
+
+<section class="en_misc row">
+    <div class="aside-hl col-sm-2">
+        <h5>WHAT'S HAPPENING</h5>
+    </div>
+    <div class="en_tabs  col-sm-10">
+        <ul class="nav nav-tabs" id="myTab2" role="tablist">
+            <li class="nav-item active">
+                <a class="nav-link active show" id="ca-tab" data-toggle="tab" href="#ca" role="tab" aria-controls="ca" aria-selected="false">CANADA</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="au-tab" data-toggle="tab" href="#au" role="tab" aria-controls="au" aria-selected="false">AUSTRALIA</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="nz-tab" data-toggle="tab" href="#nz" role="tab" aria-controls="nz" aria-selected="true">NEW ZEALAND</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="ie-tab" data-toggle="tab" href="#ie" role="tab" aria-controls="ie" aria-selected="false">IRELAND</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="za-tab" data-toggle="tab" href="#za" role="tab" aria-controls="za" aria-selected="false">SOUTH AFRICA</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="my-tab" data-toggle="tab" href="#my" role="tab" aria-controls="my" aria-selected="false">MALAYSIA</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="ph-tab" data-toggle="tab" href="#ph" role="tab" aria-controls="ph" aria-selected="false">PHILIPPINES</a>
+            </li>
+
+        </ul>
+        <div class="tab-content" id="myTabContent2">
+
+            <div class="tab-pane fade show active" id="ca" role="tabpanel" aria-labelledby="ca-tab">
+                <ul class="news news_ca row">
+                    {% for article in articles_ca %}
+                    <li class="item-nz col-sm-4">
+                        <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer">
+                            <div class="column">
+                                <div class="image col-12">
+                                    <img src="{{ article.urlToImage}}" alt="{{article.title}}">
+                                </div>
+                                <div class="column col-12">
+                                    <h3 class="md">{{article.title}}</h3>
+                                </div>
+                            </div>
+
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="tab-pane fade show" id="au" role="tabpanel" aria-labelledby="au-tab">
+                <ul class="news news_au row">
+                    {% for article in articles_au %}
+                    <li class="item-nz col-sm-4">
+                        <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer">
+                            <div class="column">
+                                <div class="image col-12">
+                                    <img src="{{ article.urlToImage}}" alt="{{article.title}}">
+                                </div>
+                                <div class="column col-12">
+                                    <h3 class="md">{{article.title}}</h3>
+                                </div>
+                            </div>
+
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="tab-pane fade" id="nz" role="tabpanel" aria-labelledby="nz-tab">
+                <ul class="news news_nz row">
+                    {% for article in articles_nz %}
+                    <li class="item-nz col-sm-4">
+                        <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer">
+                            <div class="column">
+                                <div class="image col-12">
+                                    <img src="{{ article.urlToImage}}" alt="{{article.title}}">
+                                </div>
+                                <div class="column col-12">
+                                    <h3 class="md">{{article.title}}</h3>
+                                </div>
+                            </div>
+
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="tab-pane fade" id="ie" role="tabpanel" aria-labelledby="ie-tab">
+                <ul class="news news_ie row">
+                    {% for article in articles_ie %}
+                    <li class="item-ie col-sm-4">
+                        <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer">
+                            <div class="column">
+                                <div class="image col-12">
+                                    <img src="{{ article.urlToImage}}" alt="{{article.title}}">
+                                </div>
+                                <div class="column col-12">
+                                    <h3 class="md">{{article.title}}</h3>
+                                </div>
+                            </div>
+
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="tab-pane fade" id="za" role="tabpanel" aria-labelledby="za-tab">
+                <ul class="news news_za row">
+                    {% for article in articles_za %}
+                    <li class="item-za col-sm-4">
+                        <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer">
+                            <div class="column">
+                                <div class="image col-12">
+                                    <img src="{{ article.urlToImage}}" alt="{{article.title}}">
+                                </div>
+                                <div class="column col-12">
+                                    <h3 class="md">{{article.title}}</h3>
+                                </div>
+                            </div>
+
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="tab-pane fade" id="my" role="tabpanel" aria-labelledby="my-tab">
+                <ul class="news news_my row">
+                    {% for article in articles_my %}
+                    <li class="item-my col-sm-4">
+                        <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer">
+                            <div class="column">
+                                <div class="image col-12">
+                                    <img src="{{ article.urlToImage}}" alt="{{article.title}}">
+                                </div>
+                                <div class="column col-12">
+                                    <h3 class="md">{{article.title}}</h3>
+                                </div>
+                            </div>
+
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="tab-pane fade" id="ph" role="tabpanel" aria-labelledby="ph-tab">
+
+                <ul class="news news_ph row">
+                    {% for article in articles_ph %}
+                    <li class="item-my col-sm-4">
+                        <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer">
+                            <div class="column">
+                                <div class="image col-12">
+                                    <img src="{{ article.urlToImage}}" alt="{{article.title}}">
+                                </div>
+                                <div class="column col-12">
+                                    <h3 class="md">{{article.title}}</h3>
+                                </div>
+                            </div>
+
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<h2 class="hl-jp">Japan<span class="strip-line"></span></h2>
+<div>
+    <ul class="news news_jp">
+        {% for article in articles_jp %}
+        <li class="item-jp">
+            <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer">
+                <div class="row">
+                    <div class="image col-sm-2">
+                        <img src="{{ article.urlToImage}}" alt="{{article.title}}">
+                    </div>
+                    <div class="column col-sm-10">
+                        <h3 class="md">{{article.title}}</h3>
+                        <p>{{ article.description }}</p>
+                    </div>
+                </div>
+
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+</div>
+
+{% endblock %}
+{% block footer %}
+
+{% if user.is_superuser %}
+<a href="https://newsapi.org/account" target="_blank" rel="noopener noreferrer">News API</a>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'en/template/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+
+{% endblock %}
+{% block content %}
+
+<div class="template">
+    <div class="row">
+        <h2 class="col-sm-8">{{ template.name }}</h2>
+        <div class="row flip col-sm-2">
+            {% if prev %}
+            <p class="prev col-sm-6"><a href="{% url 'en:template' pk=prev.id %}" accesskey="P">PREV</a></p>
+            {% endif %}
+            {% if next %}
+            <p class="next col-sm-6"><a href="{% url 'en:template' pk=next.id %}" accesskey="N">NEXT</a></p>
+            {% endif %}
+        </div>
+    </div>
+
+    <ul class="sentences row">
+        {% for sentence in sentences %}
+        <li class="sentence-item col-sm-6 ">
+            <div class="content">
+                <div class="upper column col-12">
+                    <div class="body">{{ sentence.body|linebreaks }}</div>
+                    <p class="source"><a href="{{ sentence.source_link }}" rel="noopener" target="_blank">
+                                            {% if sentence.source_media != None %}
+                                            <img src="/static/image/{{ sentence.source_media|lower }}.png" alt="" width="16px" height="16px" class="media-source">
+                                            {% else %} －
+                                            {% endif %}
+                                            <cite>{{ sentence.source_name }}</cite></a></p>
+
+                </div>
+                {% if sentence.image %}
+                <figure class="image col-12">
+                    <img src="{{ sentence.image.url }}" alt="">
+                </figure>
+            </div>
+            {% endif %}
+
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'music/index/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="row hero-content">
+        <div class="hero-text">
+            <h1 class="hero-headline">MUSIC</h1>
+            <p class="hero-subline">HERO DESCRIPTION</p>
+        </div>
+        <ul class="nav-list row justify-content-between">
+            <li class="nav-item"><a href="{% url 'music:index' %}">HOME</a></li>
+            <li class="nav-item"><a href="{% url 'music:charts' %}">CHARTS</a></li>
+            <li class="nav-item"><a href="{% url 'music:artists' %}">ARTISTS</a></li>
+            <li class="nav-item"><a href="{% url 'music:chords' %}">PROGRESSIONS</a></li>
+            <li class="nav-item"><a href="{% url 'music:usages' %}">ARTICLES</a></li>
+            <li class="nav-item"><a href="{% url 'music:usages' %}">INSTRUMENTS</a></li>
+        </ul>
+    </div>
+
+</div>
+{% endblock %}
+{% block content %}
+
+{% include "components/alert.html" %}
+
+
+
+<div class="row">
+
+    <div class="composition col-sm-6">
+        <a href="{% url 'music:composition' %}">
+            <div class="float-wrap">
+
+                COMPOSERS
+
+            </div>
+        </a>
+    </div>
+
+    <div class="charts col-sm-6">
+        <a href="{% url 'music:charts' %}">
+            <div class="float-wrap">
+
+                LISTENERS
+
+            </div>
+        </a>
+    </div>
+</div>
+<section>
+    <div class="links">
+        <ul class="link-list">
+            <li class="link-item">
+
+            </li>
+            <li class="link-item">
+
+            </li>
+        </ul>
+
+    </div>
+</section>
+
+
+{% endblock %}
+{% if user.is_superuser %}
+{% block footer %}
+<a href="https://spotipy.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">Spotipy Docs</a>
+<a href="https://developer.spotify.com/dashboard/applications" target="_blank" rel="noopener noreferrer">Spotify for Developers</a>
+<a href="https://developer.spotify.com/documentation/web-api/reference-beta/" target="_blank" rel="noopener noreferrer">Web API</a>
+{% endblock %}
+{% endif %}

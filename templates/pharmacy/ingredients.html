@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pharmacy/ingredients/style.scss' %}">
+{% endblock %}
+{% block title %}Pharmacy | MYAPP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="content-wrap">
+    <a href="{% url 'pharmacy:properties'%}" class="properties">分類フィルター</a>
+
+    <ul class="medicine-list">
+
+        {% for ingredient in ingredients %}
+        {% if ingredient.is_hidden == True %}
+        <li class="medicine-item row align-items-center is-hidden">
+            {% else %}
+        <li class="medicine-item row align-items-center">
+            {% endif %}
+            <a href="{% url 'pharmacy:ingredient' pk=ingredient.id%}">
+                {{forloop.counter }}. {{ ingredient.name }}
+            </a>
+
+            {% if ingredient.summary %}
+            <p class="summary">{{ ingredient.summary.body }}</p>
+            {% endif %}
+            <span class="en">{{ingredient.name_en}}</span>
+
+
+        </li>
+        {% endfor %}
+    </ul>
+
+</div>
+{% endblock %}

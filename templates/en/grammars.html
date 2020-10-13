@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'en/index/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="section col-sm-6">
+        <h2>TITLE</h2>
+        <ul class="menus">
+            <li>ITEM</li>
+            <li>ITEM</li>
+            <li>ITEM</li>
+            <li>ITEM</li>
+            <li>ITEM</li>
+            <li>ITEM</li>
+            <li>ITEM</li>
+
+        </ul>
+    </div>
+
+    <div class="section col-sm-6">
+        <h2>TITLE</h2>
+
+        <ul class="menus">
+            <li>ITEM</li>
+            <li>ITEM</li>
+            <li>ITEM</li>
+            <li>ITEM</li>
+            <li>ITEM</li>
+
+        </ul>
+    </div>
+
+</div>
+
+
+{% endblock %}

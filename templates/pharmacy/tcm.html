@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pharmacy/tcm/style.scss' %}">
+{% endblock %}
+{% block title %}Pharmcy | MYAPP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block content %}
+<h2>{{ property.name}}</h2>
+<h3>{{ property.name_en }}</h3>
+
+<div class="description">
+    {{ property.memo|linebreaks}}
+</div>
+<table border=1>
+    <thead>Traditional Chinese Medicine Ingredients</thead>
+    <tbody>
+        <tr>
+            {% for title in titles %}
+            <th>{{title }}</th>
+            {% endfor %}
+        </tr>
+        {% for content in contents %}
+        <tr class="content">
+            {% for key, values in content.items %}
+            {% if forloop.counter == 1 %}
+            <td class="td-title">{{key}}</td>
+
+            {% endif %}
+            {% for item in values %}
+            {% if item == True%}
+            <td>○</td>
+            {% elif item == False %}
+            <td></td>
+            {% else %}
+            {% if item == "LOW" %}}
+            <td class="stamina low">虚弱</td>
+            {% elif item == 'UNDER_MIDDLE' %}
+            <td class="stamina u-mid">中等度以下</td>
+            {% elif item == 'MIDDLE' %}
+            <td class="stamina mid">中等度</td>
+            {% elif item == 'OVER_MIDDLE' %}
+            <td class="stamina o-mid">中等度以上</td>
+            {% elif item == 'HIGH' %}
+            <td class="stamina high">充実</td>
+            {% elif item == 'ANY' %}
+            <td class="stamina any">体力に関わらず</td>
+            {% else %}
+            <td class="status">{{ item }}</td>
+            {% endif %}
+
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<ul class="ingredient-list">
+    {% for ingredient in ingredients %}
+    <li class="ingredient-item">
+        <a href="{% url 'pharmacy:ingredient' pk=ingredient.id %}">
+            {{ ingredient.name}}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% if property.property_images.count > 0 %}
+{% for image in property.property_images.all %}
+<img src="{{ image.image.url }}" alt="">
+{% endfor %}
+{% endif %}
+{% endblock %}

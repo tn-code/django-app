@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pharmacy/terms/style.scss' %}">
+{% endblock %}
+{% block title %}Pharmacy | MYAPP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="content-wrap">
+    <ul class="medicine-list">
+
+        {% for term in terms %}
+        {% if term.children|length > 0 %}
+        <li class="parent-item">
+            <a href="{% url 'pharmacy:term' pk=term.content.id%}">
+                {{ term.content.name }} ({{term.content.name_en}})
+            </a>
+
+            {% include "pharmacy/child_terms.html" %}
+
+        </li>
+        {% else %}
+        <li class="single-item">
+            <a href="{% url 'pharmacy:term' pk=term.content.id%}">
+                {{ term.content.name }} ({{term.content.name_en}})
+            </a>
+
+
+        </li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+
+</div>
+{% endblock %}

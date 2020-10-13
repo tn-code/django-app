@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'lib/memos/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<h1>Memos</h1>
+<ul class="card-columns">
+
+    {% for memo in memos %}
+    <li class="card">
+        <div class="card-body">
+            <a href="{{ memo.source }}" target="_blank" rel="noopener noreferrer">
+                <p>{{ memo.body|linebreaks }}</p>
+                <p>{{ memo.comment}}</p>
+            </a>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

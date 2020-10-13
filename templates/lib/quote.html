@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'lib/quote/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/lib">Library</a></li>
+        <li class="breadcrumb-item"><a href="/lib/quotes">quotes</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ quote.name }}</li>
+    </ol>
+</nav>
+<div class="upper-box">
+    <div class="left">
+        <figure class="image">
+            <img src="{{book.image.url}}" alt="{{book.name}}">
+        </figure>
+    </div>
+    <div class="right">
+        <div class="upper-meta">
+            <h5>{{book.name}}</h5>
+
+            <a href="/admin/lib/quote/{{ quote.id }}/change/">Edit</a>
+        </div>
+        <span class="col-12">({{quote.id}})</span>
+        <div class="quote-box">
+            <div class="count columns justify-content-center align-items-center">
+
+            </div>
+
+
+            <div class="body-box">
+                <p class="body">{{ quote.body|linebreaks }}</p>
+            </div>
+        </div>
+
+
+
+    </div>
+
+</div>
+
+{% if alert_theme == True %}
+<div class="alert alert-success" role="alert">
+    <p>引用を、テーマ<a href="/lib/themes/{{target_theme.id}}" target="_blank">「{{target_theme}}」</a>に追加しました。</p>
+</div>
+{% endif %}
+
+<form action="/lib/quotes/{{ quote.id }}" method="POST" id="quotes_theme">
+    {% csrf_token %}
+    <div class="theme-add column flex-wrap">
+        <div class="row col-12 align-items-center">
+            <select name="pk" id="theme_pk" class="col-sm-6">
+                <option selected="true" disabled="disabled">--- Select a Theme ---</option>
+                {% for theme in themes %}
+                <option value="{{ theme.id }}">{{ theme.name }}</option>
+                {% endfor %}
+            </select>
+            <span class="new col-sm-2"><a href="/lib/themes/add"><img src="/static/common/plus.png" alt="" class="xs-icon">New Theme</a></span>
+
+            <input type="submit" name="quotes_theme" form="quotes_theme" value="Add Quote" class="col-sm-3">
+        </div>
+
+
+    </div>
+</form>
+
+<div class="item">
+
+
+
+    {% if quote.image %}
+    <a data-toggle="modal" data-target="#image_{{quote.id}}">
+        <figure class="quote-image">
+            <img src="{{quote.image.url}}" alt="{{quote.body|slice:":10"}}">
+        </figure>
+    </a>
+    <!-- Modal -->
+    <div class="modal fade" id="image_{{quote.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{ quote.quote.name }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body mx-auto mw-100">
+                    <img src="{{quote.image.url}}" alt="{{quote.body|slice:":10"}}">
+                </div>
+                <div class="modal-footer">
+                    <p>{{ quote.body }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {% endif %}
+
+
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'en/quizzes/style.scss' %}">
+{% endblock %}
+{% block head_js %}
+
+<script type="text/javascript" src="{% static 'js/vue.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/axios.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/js.cookie.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+
+<script type='text/javascript'>
+    var quizzes = {{ items| safe }};
+</script>
+
+{% endblock %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block hero %}
+{% endblock %}
+
+{% block content %}
+
+<div id="app">
+    <div class="quizzes">
+        <div class="quizzes-content">
+            <div class="quizzes-inner">
+
+                <ul>
+                    <li v-for="(quiz, index) in quizzes" :key="quiz.id">
+                        <div class="content" v-show="index === quizIndex">
+                            <h5>Quiz No. [[index + 1]] / [[quizzes.length]]</h5>
+
+                            <div class="top-info">
+                                <div v-if='showAnswer == true'>
+                                    <h3 v-if='answerCheck == true'><img src="/static/image/correct.png" alt="">[[prevTerm.name]]</h3>
+                                    <h3 v-if='answerCheck == false'><img src="/static/image/wrong.png" alt="">[[prevTerm.name]]</h3>
+                                    <div class="example">
+                                        <ul>
+                                            <li v-for="(sentence,index) in prevTerm.sentences" class="row example-item">
+
+                                                <p class="definition col-sm-9">[[sentence.body]] - <a :href="[[sentence.source_link]]"target="_blank" rel="noopener noreferrer">[[sentence.source_name]]</a></p>
+                                                <div class="col-sm-3">
+                                                    <img :src="'/media/'+[[sentence.image]]" alt="">
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="question">
+                                <h4>&lt; QUESTION &gt;</h4>
+                                <p>[[ quiz.question]]</p>
+                            </div>
+                            <div class="term">
+                                <p>[[quiz.name.slice(0,0)]]</p>
+                            </div>
+                            <div class="example">
+                                <ul>
+                                    <li v-for="sentence in quiz.sentence !== null">
+                                        <p>[[sentence.body ]] - [[sentence.source_name]]</p>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="definitions">
+                                <h4>&lt; DEFINITIONS &gt;</h4>
+                                <ul>
+                                    <li v-for="(definition,index) in quiz.definitions">
+                                        <p class="definition">[[index+1]]. [[definition]]</p>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="answers">
+                                <ul class="row">
+                                    <button type="button" class="choice btn btn-lg btn-block text-left" v-for="(choice,index) in quiz.choices" @click="checkAnswer(choice,quiz['name'],quiz)" accesskey="1">[[index + 1]]. [[choice]]</button>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </li>
+                </ul>
+
+                <div class="control-panel">
+                    <ul class="row">
+                        <li>
+                            <button v-if="quizIndex < quizzes.length -1" v-on:click="next" accesskey="S">SKIP</button>
+                        </li>
+                        <li>
+                            <button v-if="quizIndex > 0" v-on:click="prev" accesskey="B">BACK</button>
+                        </li>
+                        <li>
+                            <button v-if="quizIndex === quizzes.length -1" v-on:click="next">SCORE</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+    window.onload = function () {
+        var app = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#app',
+            data: {
+                message: 'English Quizzes',
+                quizzes: quizzes,
+                quizIndex: 0,
+                showAnswer: false,
+                answerCheck: null,
+                prevTerm: null,
+            },
+            methods: {
+                hint: (name) => {
+                    console.log('Hello from ' + name + '!')
+                },
+                next: function () {
+                    this.quizIndex++;
+                    this.showAnswer = false;
+                },
+                prev: function () {
+                    this.quizIndex--;
+                },
+                checkAnswer: function (choice, answer, quiz) {
+                    csrftoken = Cookies.get('csrftoken');
+                    headers = { 'X-CSRFToken': csrftoken };
+                    data = {
+                        "id": quiz.id,
+                        "point": quiz.point
+                    };
+                    this.prevTerm = quiz;
+
+                    if (choice == answer) {
+                        axios.post('{% url "en:update_quiz_success" %}', data, { headers: headers })
+                            .then(function (response) {
+                                console.log(response);
+                            })
+                            .catch(function (error) {
+                                console.log(error.response);
+                            });
+
+                        this.quizIndex++;
+                        this.showAnswer = true;
+                        this.answerCheck = true
+
+                    }
+                    else {
+                        this.quizIndex++;
+                        this.showAnswer = true;
+                        this.answerCheck = false
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

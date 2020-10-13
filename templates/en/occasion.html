@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'en/occasion/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>My Classroom</h1>
+        <p>英語やスペイン語などの語学から世界史などを学びます。</p>
+    </div>
+
+</div>
+{% endblock %}
+{% block content %}
+
+<div>
+    <div class="occasion">
+        <div class="synonym-box">
+            <h4 class="synonyms-hl">{{ occasion.name }}</h4>
+            <ul>
+                {% for term in terms %}
+                <li>
+                    <div>
+                        <h5>{{ term.name }}</h5>
+                        <div class="definitions">
+                            {% for definition in term.definitions.all %}
+                            <p>{{definition.body}}</p>
+                            {% endfor %}
+                        </div>
+                        <div class="sentences">
+                            {% for sentence in term.sentences_related.all %}
+                            <p>{{ sentence.body }}</p>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+                </li>
+                {% endfor %}
+
+                {% for generic in generics %}
+                <li>
+                    <div>
+                        <h5>{{ term.name }}</h5>
+                        <div class="sentences">
+                            <p>{{ generic.body }}</p>
+                        </div>
+
+                    </div>
+                </li>
+                {% endfor %}
+
+            </ul>
+
+            <section class="dialogues">
+                <ul class="dialogue-list">
+                    {% for dialogue in dialogues %}
+                    <li class="dialogue-item">
+
+                        <div class="dialogue-header">
+                            <h3 class="dialogue-title">
+{{ dialogue.name }}
+                            </h3>
+                        </div>
+
+                        <div class="dialogue-content">
+                            {% for line in dialogue.line_set.all %}
+                            <div class="lines">
+                                {% if line.image %}
+                                {% if line.order|divisibleby:"2" %}
+                                <p class="line-body">{{ line.body }}</p>
+                                <span class="speaker-icon even"><img src="{{ line.image.url }}" alt=""></span>
+                                {% else %}
+                                <span class="speaker-icon odd"><img src="{{ line.image.url }}" alt=""></span>
+                                <p class="line-body">{{ line.body }}</p>
+                                {% endif %}
+                                {% else %}
+                                {% if line.order|divisibleby:"2" %}
+                                <p class="line-body">{{ line.body }}</p>
+                                <span class="speaker-icon even"><img src="/static/common/noimage_vrt.png" alt=""></span>
+                                {% else %}
+                                <span class="speaker-icon odd"><img src="/static/common/noimage_vrt.png" alt=""></span>
+                                <p class="line-body">{{ line.body }}</p>
+                                {% endif %}
+                                {% endif %}
+
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </section>
+
+
+            </table>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

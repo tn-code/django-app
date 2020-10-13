@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'lib/book/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/lib">Library</a></li>
+        <li class="breadcrumb-item"><a href="/lib/books">Books</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ book.name }}</li>
+    </ol>
+</nav>
+<div class="upper-box">
+    <div class="left">
+        {% if book.read_at == Null %}
+        <figure class="image">
+            {% else %}
+            <figure class="image read">
+                {% endif %}
+                {% if book.image %}
+                <img src="{{book.image.url}}" alt="{{book.name}}">
+                {% else %}
+                <img src="/static/common/noimage_vrt.png" alt="{{book.name}}">
+                {% endif %}
+            </figure>
+            {% if book.rate == Null %}
+            <span class="rate-null">No Reviews</span>
+            {% else %}
+            <span class="rate">
+
+                {% if book.rate == 1 %}
+                ★☆☆☆☆☆
+                {% elif book.rate == 2 %}
+                ★★☆☆☆
+                {% elif book.rate == 3 %}
+                ★★★☆☆
+                {% elif book.rate == 4 %}
+                ★★★★☆
+                {% elif book.rate == 5 %}
+                ★★★★★
+                {% endif %}
+                {% endif %}
+            </span>
+
+    </div>
+    <div class="right">
+        <div class="upper-meta">
+            <span class="category">{{book.category.name }}</span>
+            <a href="/admin/lib/book/{{ book.id }}/change/">Edit</a>
+        </div>
+
+        <h2>{{book.name}}({{book.publisher }})</h2>
+        <div class="meta">
+            <p>{{book.author }}</p>
+            <p>Published：{{book.published_at|date:"j/m/Y" }}</p>
+        </div>
+
+        <p>{{book.overview|linebreaks }}</p>
+
+    </div>
+
+</div>
+
+{% include "components/alert.html" %}
+
+
+<a href="https://read.amazon.co.jp/notebook" target="_blank" rel="noopener" class="kindle">Notebook - Kindle</a>
+<div class="quote-form">
+    <form method="post" id="add_quote">
+        {% csrf_token %}
+        {{ form.body }}
+        {{ form.book.as_hidden}}
+        {{ form.image.as_hidden }}
+        {{ form.comment.as_hidden }}
+        {{ form.terminologies.as_hidden }}
+        {{ form.quotes.as_hidden }}
+        <input type="submit" name="add_quote" class="save btn btn-primary" value="Add" form="add_quote">
+    </form>
+</div>
+
+
+<div class="row justify-content-between align-items-center upper">
+    {% if quotes.count > 0  %}
+    <div class="col-sm-6">
+        {% if keyword and keyword != Null %}
+
+        {% if quotes.count > 0 %}
+        <p>Quotes with 「{{ keyword }}」：{{ quotes.count }} Quotes</p>
+        {% else %}
+        <p>No quotes found with 「{{ keyword }}」</p>
+        {% endif %}
+
+        {% else %}
+        <p><img src="/static/image/quote.png" alt="" class="xs-icon">{{ quotes.count }} Quotes</p>
+        {% endif %}
+    </div>
+
+    <div class="searchBox col-sm-6 row align-items-center justify-content-end">
+        {% if has_filter %}
+        <a type='button' class="clear" href="{% url 'lib:book' pk=book.id%}">Clear</a>
+        {% endif %}
+        <form method="GET" action="" id="searchform">
+            <input class="searchfield" id="searchbox" name="q" type="text" value="{{ request.GET.q }}" placeholder="Enter a keyword" />
+            <input type="submit" value="Search">
+        </form>
+    </div>
+</div>
+
+
+<form action="/lib/books/{{ book.id }}" method="POST" id="quotes_theme">
+    {% csrf_token %}
+    <div class="theme-add column flex-wrap">
+        <div class="row col-12 align-items-center">
+            <select name="pk" id="theme_pk" class="col-sm-6">
+                <option selected="true" disabled="disabled">--- Select a Theme ---</option>
+                {% for theme in themes %}
+                <option value="{{ theme.id }}">{{ theme.name }}</option>
+                {% endfor %}
+            </select>
+            <span class="new col-sm-2"><a href="/lib/themes/add"><img src="/static/common/plus.png" alt="" class="xs-icon">New Theme</a></span>
+
+            <input type="submit" name="quotes_theme" form="quotes_theme" value="Add Checked Quotes" class="col-sm-3">
+        </div>
+
+
+    </div>
+    <ul>
+        {% for quote in quotes %}
+        <li class="item">
+            <div class="quote-box">
+                <input type="checkbox" name="qs[]" value="{{quote.id}}">
+                <div class="count columns justify-content-center align-items-center">
+                    <span class="count col-12">{{ forloop.counter }}</span>
+                    <span class="col-12">({{quote.id}})</span>
+                </div>
+
+                <a href="/lib/quotes/{{ quote.id }}">
+
+                    <div class="body-box">
+                        <p class="body">{{ quote.body|linebreaks }}</p>
+                    </div>
+            </div>
+            {% if quote.comment %}
+            <div class="comment-box">
+
+                <p class="comment">{{ quote.comment|linebreaks }}</p>
+            </div>
+            {% endif %}
+            </a>
+            {% if quote.image %}
+            <a data-toggle="modal" data-target="#image_{{quote.id}}">
+                <figure class="quote-image">
+                    <img src="{{quote.image.url}}" alt="{{quote.body|slice:":10"}}">
+                </figure>
+            </a>
+            <!-- Modal -->
+            <div class="modal fade" id="image_{{quote.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">{{ quote.book.name }}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body mx-auto mw-100">
+                            <img src="{{quote.image.url}}" alt="{{quote.body|slice:":10"}}">
+                        </div>
+                        <div class="modal-footer">
+                            <p>{{ quote.body }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            {% endif %}
+
+
+        </li>
+        {% endfor %}
+    </ul>
+</form>
+{% endif %}
+{% endblock %}

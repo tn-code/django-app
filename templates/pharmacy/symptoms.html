@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pharmacy/index/style.scss' %}">
+{% endblock %}
+{% block title %}Pharmacy | MYAPP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="content-wrap">
+    <ul class="medicine-list">
+
+        {% for symptom in symptoms %}
+        <li class="medicine-item">
+            <a href="{% url 'pharmacy:symptom' pk=symptom.id%}">
+                {{ symptom.name }} ({{symptom.name_en}})
+            </a>
+
+        </li>
+        {% endfor %}
+    </ul>
+
+</div>
+{% endblock %}

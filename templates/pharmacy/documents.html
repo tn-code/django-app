@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pharmacy/medicines/style.scss' %}">
+{% endblock %}
+{% block title %}Pharmacy | MYAPP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="content-wrap">
+    <ul class="medicine-list row">
+
+        {% for document in documents %}
+        <li class="medicine-item cols">
+            <img src="{{ document.image.url }}" alt="">
+        </li>
+        {% endfor %}
+    </ul>
+
+</div>
+{% endblock %}

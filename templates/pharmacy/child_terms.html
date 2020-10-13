@@ -1,0 +1,16 @@
+{% if term.children %}
+<ul class="child-list">
+    {% for child in term.children %}
+    <li class="child-item">
+        <a href="{% url 'pharmacy:term' pk=child.content.id%}">
+            {{ child.content.name }}
+        </a>
+        {% include "pharmacy/child_terms.html" with term=child%}
+    </li>
+    {% endfor %}
+</ul>
+{% elif term.children|length < 1 %}
+
+
+
+{% endif %}

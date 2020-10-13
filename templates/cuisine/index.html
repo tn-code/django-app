@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'cuisine/style.scss' %}">
+{% endblock %}
+{% block title %}MY KITCHEN{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text row">
+        <div class="hero-right col">
+            <div class="column">
+                <h2 class="hero-intro">
+                    MY KITCHEN
+                </h2>
+                <p class="hero-count">
+                    {{total}} RECIPES
+                </p>
+            </div>
+        </div>
+        <div class="inner-text col">
+            <h4>EXPLORE YOUR OWN RECIPES</h4>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum excepturi magnam, quibusdam inventore sint eum explicabo! Ipsum, quas aliquam iste, quidem minima adipisci quis inventore neque ex facilis, reiciendis excepturi.</p>
+
+        </div>
+
+
+
+    </div>
+
+</div>
+
+<section class="search">
+    <div class="search-inner row justify-content-center">
+        <div class="left cols column">
+            <h1 class="search-title col-12 ">FIND A RECIPE</h1>
+            <p class="or">OR</p>
+            <span class="new col-12"><a href="/cuisine/dishes/new">Add New Dish</a></span>
+        </div>
+
+
+        <div class="col-sm-6">
+            <div class="searchBox">
+                <form method="GET" action="{% url 'cuisine:search' %}" id="searchform" class="row">
+                    <input class="searchfield col-sm-10" id="searchbox" name="q" type="text" value="{{ request.GET.q }}" placeholder="Enter a keyword" />
+                    <input type="submit" value="Search" class="col-sm-2 main-search">
+                </form>
+            </div>
+            <div class="category">
+                <ul class="row justify-content-between">
+                    <li class="cols">
+                        <a href="{% url 'cuisine:type' pk=6 %}">
+                            <img src="/static/image/western.png" alt="">
+                            <h4>Main Dishes</h4>
+                        </a>
+                    </li>
+                    <li class="cols">
+                        <a href="{% url 'cuisine:type' pk=3 %}">
+                            <img src="/static/image/side.png" alt="">
+                            <h4>Side Dishes</h4>
+                        </a>
+                    </li>
+
+                    <li class="cols">
+                        <a href="{% url 'cuisine:type' pk=1 %}">
+                            <img src="/static/image/salad.png" alt="">
+                            <h4>Salads</h4>
+                        </a>
+                    </li>
+                    <li class="cols">
+                        <a href="{% url 'cuisine:type' pk=11 %}">
+                            <img src="/static/image/japanese.png" alt="">
+                            <h4>Soups</h4>
+                        </a>
+                    </li>
+                    <li class="cols">
+                        <a href="{% url 'cuisine:type' pk=2 %}">
+                            <img src="/static/image/pasta.png" alt="">
+                            <h4>One Bowls</h4>
+                        </a>
+                    </li>
+                    <li class="cols">
+                        <a href="{% url 'cuisine:type' pk=5 %}">
+                            <img src="/static/image/dessert.png" alt="">
+                            <h4>Desserts</h4>
+                        </a>
+                    </li>
+                    <li class="cols">
+                        <a href="{% url 'cuisine:type' pk=8 %}">
+                            <img src="/static/image/dressing.png" alt="">
+                            <h4>Dressing</h4>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+{% endblock %}
+{% block content %}
+
+{% include "components/alert.html" %}
+
+<div class="section-upper row justify-content-between align-items-center">
+    <h2 class="section-hl">RECENT DISHES</h2>
+    <span class="strip"></span>
+    <span class="view-more"><a href="/cuisine/dishes/">view more main dishes</a></span>
+</div>
+
+<ul class="row flex-wrap">
+    {% for dish in dishes %}
+    <li class="item col-sm-6 col-md-4 col-lg-3">
+        <a href="/cuisine/dishes/{{dish.id}}">
+            <div class="item-box">
+                <figure class="image">
+                    {% if dish.image %}
+                    <img src="{{dish.image.url}}" alt="{{dish.name}}">
+                    {% else %}
+                    <img src="{% static 'image/noimg.jpg' %}" alt="{{dish.name}}">
+                    {% endif %}
+                </figure>
+                <div class="caption">
+                    <!-- <span class="jp_mplus">{{ dish.name }}</span> -->
+                    <span class="en_script">{{ dish.name_alpha}}</span>
+                </div>
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+
+<section>
+    <div class="section-title row justify-content-between align-items-center">
+        <h2>Statistics</h2>
+        <span class="add"><a href="#">View More Stats.</a></span>
+    </div>
+    <img class="plot" src="{% url 'cuisine:plots'  %}" width=400 height=400>
+</section>
+<h3><a href="{% url 'cuisine:teas'%}">TEAROOM</a></h3>
+<section class="sources">
+    <div class="section-title row justify-content-between align-items-center">
+        <h2>Find a recipe</h2>
+        <span class="add"><a href="#">View More Sources</a></span>
+    </div>
+
+</section>
+<section class="ingredients">
+    <h3><a href="{% url 'cuisine:ingredients' %}">Foods & Condiments</a></h3>
+</section>
+<section class="info">
+    <div class="info-inner">
+        <h3>Information</h3>
+        <ul>
+            {% for memo in memos %}
+            <li><a href="{{memo.source}}" target="_blank" rel="noopener noreferrer">{{ memo.body|slice:':60'}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+
+
+{% endblock %}

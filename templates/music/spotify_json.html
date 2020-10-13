@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'music/index/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<h3>Top Artists & Top Tracks</h3>
+{{ file }}
+<hr>
+{{ charts }}
+<hr>
+{% for chart in charts %}
+<p>{{ chart }}</p>
+{% endfor %}
+{% endblock %}

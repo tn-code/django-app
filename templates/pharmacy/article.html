@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pharmacy/article/style.scss' %}">
+{% endblock %}
+{% block title %}Pharmacy | MYAPP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="content-wrap">
+    <h3>{{article.name}}</h3>
+    {% if article.memo %}
+
+    <div class="memo">
+        {{article.memo|linebreaks}}
+    </div>
+    {% endif %}
+    <div class="">
+        {{article.body|safe|linebreaks}}
+    </div>
+
+</div>
+{% endblock %}

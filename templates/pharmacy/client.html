@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pharmacy/ingredient/style.scss' %}">
+{% endblock %}
+{% block title %}Pharmacy | MYAPP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block content %}
+<h2>{{client.name}}</h2>
+
+
+<section>
+    <div class="precautions">
+        {% if prohibitions.count > 0 %}
+        <h4><img class="precaution-icon" src="/static/image/prohibition.jpg" alt="">してはいけないこと(What you should NOT do)</h4>
+
+        <ul class="prohibition precaution-list">
+            {% for prohibition in prohibitions %}
+            <li class="precaution-item">
+                {% for ingredient in prohibition.ingredients.all %}
+                <a href="{% url 'pharmacy:ingredient' pk=ingredient.id %}">{{ingredient.name}}</a> - {{prohibition.memo}}
+                {% endfor %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% if consultations.count > 0 %}
+        <h4><img class="precaution-icon" src="/static/image/consultation.jpg" alt="">相談すること(Who should seek consultation)</h4>
+        <ul class="consultation precaution-list">
+            {% for consultation in consultations %}
+            <li class="precaution-item">
+                {% for ingredient in consultation.ingredients.all %}
+                <a href="{% url 'pharmacy:ingredient' pk=ingredient.id %}">{{ingredient.name}}</a> - {{consultation.memo}}
+                {% endfor %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% if precautions.count > 0 %}
+        <h4><img class="precaution-icon"  src="/static/image/precaution.jpg" alt="">使用上の注意(Precautions for use)</h4>
+        <ul class="precaution precaution-list">
+            {% for precaution in precautions %}
+            <li class="precaution-item">
+                {{precaution.name}}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+
+
+    </div>
+</section>
+
+{% endblock %}

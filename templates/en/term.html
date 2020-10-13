@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'en/term/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'en:index' %}">Classroom</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'en:terms' %}">Terms</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ term.name }}</li>
+        <li class="edit-link"><a href="http://127.0.0.1:8000/admin/en/term/{{term.id}}/change/" target="_blank" rel="noopener noreferrer">Edit</a></li>
+    </ol>
+</nav>
+
+<div>
+    <div class="upper row">
+
+        {# left #}
+        <div class="upper-left col-sm-8">
+
+            {# title & meta #}
+            <div class="upper row align-items-center">
+                {% if term.is_phrase == True %}
+                <p class=" phrase"><span>Phrase</span></p>
+                {% endif %}
+                {% if term.is_basic == True %}
+                <p class="basic"><span>Basic</span></p>
+                {% endif %}
+                <h2>{{ term.name}}</h2>
+                {% if term.alternatives %}
+                <span class="alternatives">(also: {{ term.alternatives }})</span>
+                {% endif %}
+                {% if term.pronunciation %}
+                <p class="pronounce"><span class="pill">Phonetic Sym.</span><span>/{{term.pronunciation}}/</span></p>
+                {% endif %}
+                {% if term.is_onomatopea == True %}
+                <p class="onomatopea pronounce"><span class="pill">ONOMATOPEA</span></p>
+                {% endif %}
+                {% if term.genres %}
+                <p class="genres pronounce"><span class="pill">Genres</span>
+                                                    {% for genre in term.genres.all %}
+                                                    <span><a href="{% url 'en:genre' pk=genre.id %}">{{genre.name}}</a></span></p>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="middle-info row align-items-center">
+                <div class="proficiency row">
+                    <div>
+                        <p class="label">PROFICIENCY</p>
+                    </div>
+
+                    <div class="chart">
+                        {% if 0 < term.proficiency %}
+                        <span class="lv1 lv-bar colored">
+                            {% elif term.proficiency == 0 %}
+                            <span class="lv1 lv-bar">
+                                {% endif %}
+                            </span>{% if 20 <= term.proficiency %}<span class="lv2 lv-bar colored">{% elif term.proficiency < 20 %}<span class="lv2 lv-bar">
+                                    {% endif %}
+                                </span><span class="lv3 lv-bar"></span><span class="lv4 lv-bar"></span><span class="lv5 lv-bar"></span>
+                    </div>
+                    <span class="point">
+                        {{ term.proficiency}} pt
+                    </span>
+
+                </div>
+                {% if base.base %}
+                <div class="base row">
+                    <div>
+                        <p class="label">BASE</p>
+                    </div>
+                    <div>
+                        <p><a href="{% url 'en:term' pk=base.base.id %}">{{ base.base.name }}</a></p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+
+
+
+
+            <!-- review -->
+            <div class="row review-box align-items-center">
+                <span class="review">Last reviewed: {{term.reviewed_at|default_if_none:"Never" }}({{days|default_if_none:'?'}})</span>
+                {% if term.reviewed_at ==  today %}
+                <img src="/static/image/checked.png" alt="" class="checked"><span class="reviewed">Reviewed</span>
+                {% else %}
+                <form action="{% url 'en:term_review' pk=term.id %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="term" value="{{term.id}}">
+                    <input type="image" name="submit" width="16px" height="16px" src="/static/image/review.png" alt="submit">
+                </form>
+                {% endif %}
+            </div>
+
+            {# definitions #}
+            <div class="lower row justify-content-between">
+                <ol class="definitions">
+                    {% for definition,collocations in definitions %}
+
+                    <li class="definitions-item">
+                        <div>
+                            {% if definition.PoS %}
+                            <p class="definition-pos"><span>{{ definition.PoS}}</span><span class="countable">{% if definition.is_uncountable == True %}( UNCOUNTABLE ){% endif %}</span>{% if definition.formality != 'NORMAL' %}<span class="formality">({{definition.formality}})</span>{% endif %}{% if definition.dialects %}{% for dialect in definition.dialects.all %}<img src="{{dialect.image.url}}" class="dialect">{% endfor %}{% endif %}{% if definition.pronunciation%}<span class="def-pronounce">[ /{{ definition.pronunciation}}/ ]</span>{%endif%}</p>
+
+                            {% endif %}
+                            <p>{{ definition.definition }}</p>
+                            {% if term.translation %}
+                            <p>{{ definition.translation }}</p>
+                            {% endif %}
+                        </div>
+                        <ul class="collocation-list">
+
+                            {% for collocation in collocations %}
+
+                            <li class="collocation-item row"><span class="collocation_pos col">{{collocation.PoS}}</span><span class="collocation-name col-sm-10">{{ collocation.name }}</span></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% endfor %}
+                </ol>
+
+                {% if term.memo %}
+                <div class="memo">
+                    {{ term.memo|linebreaks }}
+                </div>
+                {% endif %}
+                {% if term.usages.count > 0 %}
+                <div class="usages">
+                    <ul class="usage-list">
+                        {% for usage in term.usages.all %}
+                        <li class="usage-item">
+                            <div class="usage-content">
+                                <h4 class="usage-title">{{ usage.title }}</h4>
+                                <p>{{ usage.body|linebreaks }}</p>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {{ term.memo|linebreaks }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# right #}
+        <div class="upper-right col-sm-4">
+
+
+            {% if term.image %}
+            <div class="term-image">
+                <img src="{{ term.image.url }}" alt="">
+                {% else %}
+                <div class="no-image">
+                    <img src="/static/image/noimage.png" alt="">
+                    {% endif %}
+
+                </div>
+
+                {% if synonyms_ls %}
+                <div class="synonym-box">
+                    <h5 class="synonyms-hl">Synonyms</h5>
+                    <ul class="synonyms-list">
+                        {% for synonym in synonyms_ls %}
+
+                        <li>
+                            <div>
+                                <p><a href="/en/terms/{{ synonym.id }}">{{ synonym.name }}</a></p>
+
+
+                            </div>
+
+                        </li>
+                        {% endfor %}
+
+
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if derivatives %}
+                <div class="synonym-box">
+                    <h5 class="synonyms-hl">Derivatives</h5>
+                    <ul class="synonyms-list">
+                        {% for derivative in derivatives %}
+                        <li>
+                            <div>
+                                <p><a href="/en/terms/{{ derivative.derivative.id }}">{{ derivative.derivative.name }}</a></p>
+
+                            </div>
+
+                        </li>
+                        {% endfor %}
+
+
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="line"></div>
+        {% if sentences.count > 0 %}
+        <div>
+            <ul class="sentences row">
+                {% for sentence in sentences %}
+                <li class="sentence col-sm-4 ">
+                    <a class="sentence_edit" href="http://127.0.0.1:8000/admin/en/sentence/{{sentence.id}}/change/">
+                        <div class="content">
+                            <div class="upper column col-12">
+                                <div class="body">{{ sentence.body|linebreaks }}</div>
+                                <p class="source"><a href="{{ sentence.source_link }}" rel="noopener" target="_blank">
+                            {% if sentence.source_media != None %}
+                            <img src="/static/image/{{ sentence.source_media|lower }}.png" alt="" width="16px" height="16px" class="media-source">
+                            {% else %} －
+                            {% endif %}
+                            <cite>{{ sentence.source_name }}</cite></a></p>
+
+                            </div>
+                            {% if sentence.image %}
+                            <figure class="image col-12">
+                                <img src="{{ sentence.image.url }}" alt="">
+                            </figure>
+                        </div>
+                        {% endif %}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+
+
+
+    {% endblock %}

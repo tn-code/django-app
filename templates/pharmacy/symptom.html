@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pharmacy/index/style.scss' %}">
+{% endblock %}
+{% block title %}Pharmacy | MYAPP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="content-wrap">
+    <h3>{{symptom.name}}</h3>
+    <ul class="ingredient-list">
+
+        {% for ingredient in ingredients %}
+        <li class="ingredient-item">
+            <a href="{% url 'pharmacy:ingredient' pk=ingredient.id %}">
+                {{ingredient.name}}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% if images.count > 0 %}
+    {% for image in images %}
+    <img src="{{ image.image.url }}" alt="">
+    {% endfor %}
+    {% endif %}
+    <div class="">
+        {{symptom.description|linebreaks}}
+    </div>
+
+</div>
+{% endblock %}

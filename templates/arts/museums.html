@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'lib/books/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<div class="upper-box">
+    <ul class="row flex-wrap">
+        {% for museum in museums %}
+        <li class="item col-sm-6">
+            <a href="{% url 'arts:museum' pk=museum.id %}" class="row">
+                <div class="left col-4 col-sm-12 col-md-4">
+                    <figure class="image">
+                        {% if museum.image %}
+                        <img src="{{museum.image.url}}" alt="{{museum.name}}">
+                        {% endif %}
+                    </figure>
+                </div>
+                <div class=" right col-8 col-sm-12 col-md-8">
+                    <h2>{{museum.name_en}}</h2>
+                    <div class="meta">
+                        <p>Location：{{museum.city }}, {{museum.country }}</p>
+                        <p>Established：{{museum.established_at }}</p>
+                    </div>
+
+                    <p>{{museum.description|linebreaks|slice:":120" }}...</p>
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pharmacy/ingredient/style.scss' %}">
+{% endblock %}
+{% block title %}Pharmacy | MYAPP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="upper row">
+    <div class="left cols">
+        <h3 class="title_en">{{ ingredient.name_en }}</h3>
+        <h2>{{ ingredient.name }}</h2>
+
+        {% if ingredient.alias %}
+
+        <span class="alias">({{ ingredient.alias }})</span>
+        {% endif %}
+        <div class="meta">
+            {% if ingredient.formula %}
+            <p class="formula"><span>CHEMICLA FORMULA</span>{{ ingredient.formula }}</p>
+            {% endif %}
+            {% if ingredient.iupac %}
+            <p class="iupac"><span>IUPAC</span>{{ ingredient.iupac }}</p>
+            {% endif %}
+
+
+            {% if related_ingredients.count > 0 %}
+            <p class="compositions"><span>RELATED</span>{% for composition in related_ingredients %}<a class="related-item " href="{% url 'pharmacy:ingredient' pk=composition.id %}">{{ composition.name }}</a>{% endfor %}</p>
+            {% endif %}
+
+
+            {% if ingredient.properties.count > 0 %}
+            <p class="properties"><span>PROPERTIES</span>{% for property in ingredient.properties.all %}<a href="{% url 'pharmacy:property' pk=property.id %}">{{ property.name }}</a>{% endfor %}</p>
+            {% endif %}
+            <section class="point">
+                {% if ingredient.summary %}
+                <p class="summary">{{ ingredient.summary.body }}</p>
+                {% endif %}
+            </section>
+
+        </div>
+    </div>
+    <div class="right col">
+        {% if ingredient.image %}
+        <img src="{{ ingredient.image.url }}" alt="" class="ingredient-image">
+        {% endif %}
+    </div>
+    <span class="edit col"><a href="http://127.0.0.1:8000/admin/pharmacy/ingredient/{{ingredient.id}}/change/">Edit</a></span>
+</div>
+
+
+
+<h4>Efficacy</h4>
+<ul class="effect-list">
+
+    {% for effect in ingredient.effects.all %}
+    <li class="effect-item">
+        <a href="{% url 'pharmacy:effect' pk=effect.id %}">{{ effect.name }}({{effect.name_en}})</a>
+    </li>
+    {% endfor %}
+</ul>
+{% if ingredient.side_effects.count > 0%}
+<div class="side-wrap row align-items-center">
+    <h4 class="side-title">SIDE EFFECT</h4>
+    <ul class="effect-list">
+
+        {% for effect in ingredient.side_effects.all %}
+        <li class="side-item cols">
+            {{ effect.name }}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+<section>
+    {% if side_effects.count > 0 %}
+    <h4><img class="precaution-icon"  src="/static/image/precaution.jpg" alt="">使用上の注意(Precautions for use)</h4>
+    <ul class="precaution precaution-list">
+        {% for se in side_effects %}
+        <li class="precaution-item">
+            {{ se.name }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</section>
+<section>
+    <div class="precautions">
+        {% if prohibitions.count > 0 %}
+        <h4><img class="precaution-icon" src="/static/image/prohibition.jpg" alt="">してはいけないこと(What you should NOT do)</h4>
+
+        <ul class="prohibition precaution-list">
+            {% for prohibition in prohibitions %}
+            <li class="precaution-item">
+                {% if prohibition.client %}
+                <a href="{% url 'pharmacy:client' pk=prohibition.client.id %}">{{ prohibition.client.name }}</a> - {{prohibition.name}}
+                {% else %}
+                {{prohibition.name}}
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% if consultations.count > 0 %}
+        <h4><img class="precaution-icon" src="/static/image/consultation.jpg" alt="">相談すること(Who should seek consultation)</h4>
+        <ul class="consultation precaution-list">
+            {% for consultation in consultations %}
+            <li class="precaution-item">
+                {% if consultation.client %}
+                <a href="{% url 'pharmacy:client' pk=consultation.client.id %}">{{ consultation.client.name }}</a> - {{consultation.name}}
+                {% else %}
+                {{ consultation.name}}
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% if precautions.count > 0 %}
+        <h4><img class="precaution-icon"  src="/static/image/precaution.jpg" alt="">使用上の注意(Precautions for use)</h4>
+        <ul class="precaution precaution-list">
+            {% for precaution in precautions %}
+            <li class="precaution-item">
+                {% if precaution.client %}
+                <a href="{% url 'pharmacy:client' pk=precaution.client.id %}">{{ precaution.client.name }}</a> - {%endif %}{{precaution.name}}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+
+
+    </div>
+</section>
+<section>
+    <ul class="product-list align-items-center row">
+        {% for medicine in ingredient.medicines.all %}
+        <li class="product-item col-sm-2">
+            {% if medicine.image %}
+            <a href="{% url 'pharmacy:medicine' pk=medicine.id %}">
+                <img src="{{ medicine.image.url }}" alt="" class="product-image">
+            </a>
+            {% else %}
+            <a href="{% url 'pharmacy:medicine' pk=medicine.id %}">[NO IMAGE]</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% if ingredient.ingredient_images.count > 0 %}
+<div class="images">
+
+    <ul class="image-list row">
+
+        {% for image in ingredient.ingredient_images.all %}
+        <li class="col-sm-4 image-item">
+            <img src="{{ image.image.url }}" alt="">
+        </li>
+
+        {% endfor %}
+    </ul>
+
+</div>
+{% endif %}
+<div class="body-wrap row">
+
+
+    <div class="overview col">
+        {{ ingredient.memo|linebreaks}}
+
+
+    </div>
+    {% if ingredient.references.count > 0 %}
+    <div class="terms col-3">
+        <h4 class="terms-title">Terminology</h4>
+        <ul class="term-list">
+            {% for term in ingredient.references.all %}
+            <li class="term-item">
+                <h5 class="term-title">
+            <a href="{% url 'pharmacy:term' pk=term.id %}">
+                {{term.name}}
+            </a>
+        </h5>
+                {{term.description|slice:':180'}}
+                {% endfor %}
+            </li>
+        </ul>
+
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+{% load embed_video_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'music/chords/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+
+{% endblock %}
+{% block content %}
+
+{% include "components/alert.html" %}
+
+
+<ul class="track-list">
+    {% for track in tracks %}
+
+
+    <li class="track-item row">
+        <div class="track-info col-sm-4">
+            <a href="{% url 'music:chord' pk=track.id %}">
+                {{ track.name }}
+            </a>
+            <span class="key">Key: {{track.key }}</span>
+            <span class="time">{{track.time }}</span>
+            <span class="bpm">BPM: {{track.bpm}}</span>
+
+            <ul class="instrument-list">
+                {% for instrument in track.instruments.all %}
+                <li class="instrument-item">
+                    <a href="{% url 'music:instrument' pk=instrument.id %}">{{ instrument.name }}</a>
+                </li>
+                {% endfor %}
+
+            </ul>
+
+
+        </div>
+        <div class="progression-wrapper col-sm-8">
+            {% if track.progressions.count > 0 %}
+            <ul class="progression-list">
+                {% for progression in track.progressions.all %}
+                <li class="chord-item">
+                    <div class="chord-content column">
+                        <span class="chord-inner">
+
+                            <span class="chord-name">{{ progression.chord }}</span>
+
+                            {% if progression.numeral %}
+                            <span class="chord-numeral">{{ progression.numeral }}</span>
+                            {% endif %}
+                        </span>
+
+                        {% if progression.lyrics %}
+                        <span class="lyrics">{{ progression.lyrics }}</span>
+                        {% endif %}
+                        {% if progression.comment %}
+                        <span class="chord-tooltip" type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="bottom" title="{{progression.comment}}">note</span>
+                        {% endif %}
+                    </div>
+                </li>
+                <span class="arrow">→</span>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No chord progressions analysed yet</p>
+            {% endif %}
+            <div class="analysis">
+                {{ track.description|linebreaks}}
+            </div>
+        </div>
+
+    </li>
+    {% endfor %}
+</ul>
+
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+{% endblock %}

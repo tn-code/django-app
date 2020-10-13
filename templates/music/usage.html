@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+{% load embed_video_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'music/usage/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+
+{% endblock %}
+{% block content %}
+
+{% include "components/alert.html" %}
+
+<section>
+    <div>
+        <h2>{{ usage.name }}</h2>
+        <ul class="category-list row">
+            {% for category in usage.categories.all %}
+            <li class="category-item">{{ category.name }}</li>
+            {% endfor %}
+        </ul>
+        <hr class="separation">
+        <div class="content row">
+            <div class="body col-sm-6">
+                {{ usage.content |linebreaks}}
+            </div>
+            <div class="reference col-sm-6">
+                {% for image in usage.tip_images.all %}
+                <img src="{{ image.image.url }}" alt="">
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

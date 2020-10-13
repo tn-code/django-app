@@ -1,0 +1,9 @@
+{% load project_templatetags %}
+{% if messages %}
+<ul class="list-unstyled messages">
+    {% for message in messages %}
+    {% append_bootstrap_alert_class message.tags as alert_tag %}
+    <li class="{{ alert_tag }}">{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}

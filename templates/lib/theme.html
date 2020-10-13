@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'lib/theme/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="upper-box">
+    <div class="left">
+        <figure class="image">
+            <img src="{{theme.image.url}}" alt="{{theme.name}}">
+        </figure>
+    </div>
+    <div class="right">
+        {% if theme.category %}
+        <span class="category">{{theme.category.name }}</span>
+        {% endif %}
+        <h2>{{theme.name}}</h2>
+        {% if theme.description %}
+        <p>{{theme.description }}</p>
+        {% endif %}
+
+    </div>
+
+
+</div>
+<div class="theme-wrapper row">
+    <div class="main col-md-6">
+
+        <p><img src="/static/image/quote.png" alt="" class="xs-icon">{{ quotes.count }}個の引用</p>
+
+        <ul>
+            {% for quote in theme.quotes.all %}
+            <li class="item">
+                <div class="body-box">
+                    <p class="body">{{ quote.body }}</p>
+                    <p>－ <a href="/lib/books/{{quote.book.id}}">{{ quote.book.name }}</a></p>
+                </div>
+                <div class="comment-box">
+                    {% if quote.comment %}
+                    <p class="comment">{{ quote.comment }}</p>
+                    {% endif %}
+                </div>
+
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="sidebar col-md-6">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" class="save btn btn-primary" value="Update">
+        </form>
+    </div>
+</div>
+{% endblock %}

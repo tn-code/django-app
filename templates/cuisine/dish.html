@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'cuisine/dish/style.scss' %}">
+{% endblock %}
+{% block title %}{{ dish.name_alpha }}{% endblock %}
+{% block hero %}
+
+{% endblock %}
+{% block content %}
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+    </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
+    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+</div>
+
+
+
+<div class="upper">
+    <div class="left">
+        <figure class="image">
+            {% if dish.image %}
+            <a data-toggle="modal" data-target="#image_cover">
+                <img src="{{dish.image.url}}" alt="{{dish.name}}">
+            </a>
+            {% else %}
+            <img src="{% static 'image/noimg.jpg' %}" alt="{{dish.name}}">
+
+            {% endif %}
+
+        </figure>
+    </div>
+    <div class="right">
+        <div class="right-content">
+            <div class="headline">
+                <h1>{{ dish.name }}</h1>
+                <h2 class="title-en">{{ dish.name_alpha }}</h2>
+
+            </div>
+            <div class="description">{{ dish.comment|linebreaks }}</div>
+        </div>
+    </div>
+</div>
+{% if dish.image %}
+<div class="modal fade" id="image_cover" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body mx-auto mw-100">
+                <img src="{{dish.image.url}}" alt="{{dish.name_alpha}}">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times; CLOSE</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="lower">
+    {% if dish_images.count > 0 %}
+    {% for image in dish_images %}
+    <a data-toggle="modal" data-target="#image_{{image.id}}">
+        <img class="my-image" src="{{image.image.url }}" alt="">
+    </a>
+    <!-- Modal -->
+    <div class="modal fade" id="image_{{image.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-body mx-auto mw-100">
+                    <img src="{{image.image.url}}" alt="{{dish.name_alpha}}">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times; CLOSE</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+<div class="edit-info">
+    <span class="count">
+        <form action="{% url 'cuisine:dish_count' pk=dish.id %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="term" value="{{term.id}}">
+            <input type="image" name="submit" width="16px" height="16px" src="/static/image/count.png" alt="submit">
+        </form>
+        {% if dish.cooked_count > 1 %}
+        {{ dish.cooked_count }} TIMES
+        {% else %}
+        {{ dish.cooked_count }} TIME
+        {% endif %}
+        {% if dish.last_created_at %}
+        (Last created at: {{ dish.last_created_at }})
+        {% endif %}
+    </span>
+    <span class="modify"><a href="/admin/cuisine/dish/{{ dish.id }}/change/">Edit</a></span>
+</div>
+
+<div class="row">
+    <div class="ingredients col-md-4">
+        <p class="title">Ingredients</p>
+        <ul>
+            {% regroup ingredients by group.name as groups %}
+            {% for group in groups %}
+            {% if group.grouper %}
+            <h5 class="group-title">{{ group.grouper }}</h5>
+            {% endif %}
+            {% for ingredient in group.list %}
+            <li class="row">
+                {% if ingredient.food.image %}
+                <img src="{{ ingredient.food.image.url }}" alt="" class="col-sm-2 ingredient-image">
+                {% else %}
+                <img src="/static/common/noimage_vrt.png" alt="" class="col-sm-2 ingredient-image">
+                {% endif %}
+                <span class="col-sm-7">
+                    {% if ingredient.food.recipe %}
+                    <a href="{% url 'cuisine:dish' pk=ingredient.food.recipe.id%}">{{ ingredient.food.name_en }}</a>
+                    {% else %}
+                    <a href="{% url 'cuisine:food' pk=ingredient.food.id%}">{{ ingredient.food.name_en }}</a>
+                    {% endif %}
+                </span>
+                {% if ingredient.amount %}
+                <span class="amount col-sm-3">{{ ingredient.amount }}
+                    {% if ingredient.unit %}{{ingredient.unit}}{% endif %}</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+            {% endfor %}
+            {% for ingredient in condiment_ingredients %}
+            <li class="row">
+                {% if ingredient.condiment.image %}
+                <img src="{{ ingredient.condiment.image.url }}" alt="" class="col-sm-2 ingredient-image">
+                {% else %}
+                <img src="/static/common/noimage_vrt.png" alt="" class="col-sm-2 ingredient-image">
+                {% endif %}
+                <span class="col-sm-7">
+                    {% if ingredient.condiment.recipe %}
+                    <a href="{% url 'cuisine:dish' pk=ingredient.condiment.recipe.id%}">{{ ingredient.condiment.name_en }}</a>
+                    {% else %}
+                    <a href="{% url 'cuisine:condiment' pk=ingredient.condiment.id%}">{{ ingredient.condiment.name_en }}</a>
+                    {% endif %}
+                </span>
+                {% if ingredient.amount %}
+                <span class="amount col-sm-3">{{ ingredient.amount }} {% if ingredient.unit %}{{ingredient.unit}}{% endif %}</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="recipe col-md-8">
+        <h3>Recipe</h3>
+        <ul>
+            {% for recipe in dish.recipe_set.all %}
+            <li>
+                <div class="row">
+                    <div class="col-md-9 flex-wrap">
+                        <div class="inner col-12 column flex-wrap">
+                            <div class="row col-12 align-items-center recipe-upper">
+                                <div class="col-2">
+                                    <span class="order">{{recipe.order}}</span>
+
+                                </div>
+                                <div class="col-10 flex-wrap">
+                                    <p class="recipe-body"> {{recipe.body }}</p>
+
+                                </div>
+                            </div>
+                            <div class="recipe-lower row col-12">
+                                <div class="col-2 dummy">
+
+                                </div>
+                                {% if recipe.tip %}
+                                <div class="tip col-10">
+                                    <p>{{ recipe.tip }}</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% if recipe.image %}
+
+                    <figure class="recipe-image col-md-3">
+                        <img src="{{recipe.image.url}}" alt="">
+                    </figure>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+
+{% endblock %}

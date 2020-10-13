@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'en/terms_add/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+
+{% endblock %}
+{% block content %}
+<div class="bg-image"></div>
+<h3>Add a New Term</h3>
+<hr class="top-hr">
+{% if form.errors %}
+{% for field in form %}
+{% for error in field.errors %}
+<div class="alert alert-danger">
+    <strong>{{ error|escape }}</strong>
+</div>
+{% endfor %}
+{% endfor %}
+{% for error in form.non_field_errors %}
+<div class="alert alert-danger">
+    <strong>{{ error|escape }}</strong>
+</div>
+{% endfor %}
+{% endif %}
+<iframe src="https://duckduckgo.com/search.html?width=250&site=https://www.merriam-webster.com/,https://dictionary.cambridge.org,https://www.collinsdictionary.com/,https://ejje.weblio.jp/&prefill=Search&kn=1& 	kp=1" style="overflow:hidden;margin:0;padding:0;width:308px;height:40px;" frameborder="0"></iframe>
+<form action="" method="post" enctype="multipart/form-data">
+    <div class="upper row">
+
+        <section class="col-md-12 row">
+            <div class="col-sm-4">
+                <p>Name {{ form.name }}</p>
+                <p>Pronunciation {{ form.pronunciation }}</p>
+                <p>Alternatives {{ form.alternatives }}</p>
+                <p>Type {{ form.type }}</p>
+                <p>Image {{ form.image }}</p>
+                <p>Notes{{ form.memo }}</p>
+            </div>
+            <div class="col-sm-4 basic-middle">
+                <h7>Types</h7>
+                <table>
+                    <tr class="is_boolean">
+
+                        <td>{{ form.is_basic }}</td>
+                        <th>Basic</th>
+                    </tr>
+                    <tr class="is_boolean">
+
+                        <td>{{ form.is_advanced }}</td>
+                        <th>Advanced</th>
+                    </tr>
+                    <tr class="is_boolean">
+
+                        <td>{{ form.is_onomatopea }}</td>
+                        <th>Onomatopea</th>
+                    </tr>
+                    <tr class="is_boolean">
+
+                        <td>{{ form.is_pronunciation }}</td>
+                        <th>Pronunciation</th>
+                    </tr>
+
+                </table>
+                <p>
+                <label for="genre">Genre</label><span class="create-new"><a href="/admin/en/genre/add/?_to_field=id&_popup=1" target="_blank" rel="noopener noreferrer">Create New Genre</a></span></p>
+                <select name="genre_pk" id="genre">
+                    <option selected="true" disabled="disabled">--- Select ---</option>
+                    {% for genre in genres %}
+                    <option value="{{ genre.id }}">{{ genre.name }}</option>
+                    {% endfor %}
+                </select>
+                <p><label for="occasion">Occasion</label><span class="create-new"><a href="/admin/en/occasion/add/?_to_field=id&_popup=1" target="_blank" rel="noopener noreferrer">Create New Occasion</a></span></p>
+                <select name="occasion_pk" id="occasion">
+                    <option selected="true" disabled="disabled">--- Select ---</option>
+                    {% for occasion in occasions %}
+                    <option value="{{ occasion.id }}">{{ occasion.name }}</option>
+                    {% endfor %}
+                </select>
+
+            </div>
+            <div class="col-sm-4">
+                <div class="derivative">
+
+
+                    {{ derivative_formset.management_form }}
+
+                    {% for derivative_form in derivative_formset.forms %}
+                    <div class="col-md-12 derivative-item">
+                        <h5>Derivative</h5>
+                        {{ derivative_form.as_p }}
+                    </div>
+
+                    {% endfor %}
+                </div>
+                <section class="col-md-12 column synonym">
+                    {{ synonym_formset.management_form }}
+                    <h5>Synonyms<span class="create-new"><a href="/admin/en/term/add/?_to_field=id&_popup=1" target="_blank" rel="noopener noreferrer">Create New Term</a></span></h5>
+                    {% for synonym_form in synonym_formset.forms %}
+                    <div class="synonym-item">
+
+                        {{ synonym_form.as_p }}
+                    </div>
+
+                    {% endfor %}
+                </section>
+            </div>
+        </section>
+
+    </div>
+
+    <hr class="section-hl">
+
+    <div class="middle row">
+        <section class="col-md-12 row">
+            {{ definition_formset.management_form }}
+
+            {% for definition_form in definition_formset.forms %}
+            <div class="col-md-4 definition-item">
+                <h5>Definition {{ forloop.counter }}</h5>
+                {{ definition_form.as_p }}
+
+                {% if definition_form.nested %}
+                <div class="nested">
+                    {{ definition_form.nested.management_form }}
+                    {{ definition_form.nested.non_form_errors }}
+
+                    {% for nested_form in definition_form.nested %}
+                    {% if forloop.counter == 1 %}
+
+                    <div class="collocations nested-content">
+                        <h6>Collocation</h6>
+                        {% else %}
+
+                        <div class="clauses nested-content">
+                            <h6>Clause</h6>
+                            {% endif %}
+                            {{ nested_form.as_p }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% endfor %}
+        </section>
+    </div>
+
+    <hr class="section-hl">
+
+    <div class="lower row">
+        <section class="col-md-12 column sentence">
+            <div class="row">
+                {{ sentence_formset.management_form }}
+                {% for sentence_form in sentence_formset %}
+
+                <div class="col-lg-6">
+                    <h5>Sentence {{ forloop.counter }}</h5>
+                    {{ sentence_form.as_p }}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+
+    </div>
+
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+
+
+
+{% endblock %}

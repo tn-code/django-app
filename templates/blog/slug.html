@@ -1,0 +1,30 @@
+{% extends "blog/base.html" %}
+{% load static %}
+{% load sass_tags %}
+{% load markdownify %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'blog/slug/style.scss' %}">
+{% endblock %}
+{% block title %}Diary{% endblock %}
+
+{% block content %}
+<main>
+    <div class="content">
+        <div class="upper">
+            <h2 class="title">{{post.title}}</h2>
+            <div class="row meta justify-content-end">
+                <span class="published">{{ post.created_at }}</span>
+            </div>
+            <figure>
+                {% if post.image %}
+                <img src="{{ post.image.url}}" alt="">
+                {% endif %}
+            </figure>
+        </div>
+
+
+        <div>{{ post.body|safe }}</div>
+    </div>
+</main>
+{% endblock %}

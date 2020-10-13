@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+{% load embed_video_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'music/track/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+
+{% endblock %}
+{% block content %}
+
+{% include "components/alert.html" %}
+
+<div class="top-info">
+    <div class="info-content row">
+        <div class="artist">
+            {% for artist in track.artists.all %}
+            {% if artist.image %}
+            <img src=" {{ artist.image.url }}" alt="">
+            {% else %}
+            <img src="/static/common/noimage_hor.png" alt="" class="artist image">
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="text">
+            <h3>{{ track.name }}</h3>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+
+    <section class="plot-wrap col-sm-6">
+        <a href="{% url 'music:track_plot' pk=track.id %}"><img class="plot" src="{% url 'music:track_plot' pk=track.id %}" alt=""></a>
+    </section>
+
+
+    <section class="progressions col-sm-6">
+        <h3>Chord Progressions</h3>
+        {% if progressions.count > 0 %}
+        <ul class="progression-list">
+            {% for progression in progressions %}
+            <li class="chord-item">
+                <div class="chord-content column">
+                    <span class="chord-inner">
+                        <span class="chord-name">{{ progression.chord }}</span>
+                        {% if progression.numeral %}
+                        <span class="chord-numeral">{{ progression.numeral }}</span>
+                        {% endif %}
+                    </span>
+
+                    {% if progression.lyrics %}
+                    <span class="lyrics">{{ progression.lyrics }}</span>
+                    {% endif %}
+                </div>
+            </li>
+            <span class="arrow">→</span>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No chord progressions analysed yet</p>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

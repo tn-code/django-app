@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+{% load project_templatetags %}
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'en/search/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1 class="hero-title">Learn English</h1>
+        <span class="vrt-hr"></span>
+        <p class="hero-subtitle">Your Own English Language Center</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+{% include "components/alert.html" %}
+
+<div class="upper row justify-content-start align-items-center">
+    <div class="all-terms">
+        <a class="lexicon" href="{% url 'en:lexicon'%}">
+            <span class="lexicon_left">All Terms</span><span class="total">{{ total }}</span>
+        </a>
+
+    </div>
+    <div class="sub_nav">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">TOP</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" id="communication-tab" data-toggle="tab" href="#communication" role="tab" aria-controls="communication" aria-selected="false">CONVERSATION</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="appendix-tab" data-toggle="tab" href="#appendix" role="tab" aria-controls="appendix" aria-selected="false">LECTURE</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="quizzes-tab" data-toggle="tab" href="#quizzes" role="tab" aria-controls="quizzes" aria-selected="false">QUIZZES</a>
+            </li>
+        </ul>
+
+    </div>
+    <div class="searchBox">
+        <form method="GET" action="" id="searchform" class="row en-search">
+            <input class="searchfield cols" id="searchbox" name="q" type="text" value="{{ request.GET.q }}" placeholder="Search..." />
+            <input type="submit" value="" class="cols main-search">
+        </form>
+    </div>
+
+
+    <div class="manage dropdown">
+        <button class="new_term dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="/static/common/settings_w.png" alt="" width=16px>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="{% url 'en:term_add' %}">Add new term</a>
+            <a class="dropdown-item" href="{% url 'en:sentence_add' %}">Add new sentence</a>
+            <a class="dropdown-item" href="{% url 'en:synonym_add' %}">Create synonym combination</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="https://books.google.com/ngrams" target="_blank" rel="noopener noreferrer">Google Ngram Viewer</a>
+            <a class="dropdown-item" href="http://www.freecollocation.com/" target="_blank" rel="noopener noreferrer">Online Collocation Dictionary</a>
+            <a class="dropdown-item" href="https://brians.wsu.edu/common-errors/" target="_blank" rel="noopener noreferrer">Washington State University - Common Errors</a>
+            <a class="dropdown-item" href="https://www.collinsdictionary.com/" target="_blank" rel="noopener noreferrer">Collins English Dictionary</a>
+            <a class="dropdown-item" href="https://www.merriam-webster.com/" target="_blank" rel="noopener noreferrer">Merriam-Webster</a>
+            <a class="dropdown-item" href="https://dictionary.cambridge.org/" target="_blank" rel="noopener noreferrer">Cambridge English Dictionary</a>
+            <a class="dropdown-item" href="https://ejje.weblio.jp/" target="_blank" rel="noopener noreferrer">Weblio</a>
+
+
+        </div>
+    </div>
+
+
+</div>
+
+<section class="content">
+    <h4>Sentences</h4>
+    <ul class="sentence-list">
+        {% for sentence in sentences %}
+        <li class="sentence-item row flex-nowrap">
+            <div class="image-box col-1">
+                {% if sentence.image %}
+
+                <img src=" {{ sentence.image.url }}" alt="" class="sentence-image">
+                {% else %}
+                <img src="/static/common/noimage_vrt.png" alt="" class="sentence-image">
+                {% endif %}
+            </div>
+
+            <div class="sentence-content col-11">
+                {{ sentence.body|highlight_search:keyword|linebreaks }}
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h4>Terms</h4>
+    <ul class="term-list">
+        {% for term in terms %}
+        <li class="term-item">{{ term.name}}</li>
+        {%endfor %}
+    </ul>
+</section>
+
+
+{% endblock %}

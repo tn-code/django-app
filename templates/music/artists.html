@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+{% load embed_video_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'music/artist/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+
+{% endblock %}
+{% block content %}
+
+{% include "components/alert.html" %}
+
+<div class="row">
+    <div class="col-lg-6">
+        <h4>Artists</h4>
+
+        {% for key, artists_query in artists.items %}
+        <ul>
+            {% if artists_query.count > 0 %}
+            <h3 class="alpha">{{ key }}</h3>
+            {% endif %}
+            {% for artist in artists_query %}
+            <li>
+                <div class="item-box row align-items-center justify-content-start">
+                    <span class="rank">{{ forloop.counter }}</span>
+                    <div class="cover artist">
+                        {% if artist.image %}
+                        <img src="{{ artist.image.url}}" alt="">
+                        {% else %}
+                        <img src="/static/common/noimage_hor.png" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="column col-sm-6 flex-nowrap">
+                        <p class="item-title artist col-12"><a href="{% url 'music:artist' pk=artist.id %}">{{ artist.name }}</a>{% if artist.crown == True %}
+                        <img class="crown" src="/static/image/crown.png" alt="">
+                        {% endif %}</p>
+
+                    </div>
+                    <div class="country">
+                        {% if artist.country %}<img src="/static/image/flags/{{artist.country}}.png" alt="{{artist.country}}" class="country-symbol">{%endif%}
+                    </div>
+
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endfor %}
+
+    </div>
+    <div class="col-lg-6">
+        <h4>Classical & Jazz Artists/Players</h4>
+        <ul>
+            {% for artist in inst_artists %}
+            <li>
+                <div class="item-box row align-items-center justify-content-start">
+                    <span class="rank">{{ forloop.counter }}</span>
+                    <div class="cover artist">
+                        {% if artist.image %}
+                        <img src="{{ artist.image.url}}" alt="">
+                        {% else %}
+                        <img src="/static/common/noimage_hor.png" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="column col-sm-6 flex-nowrap">
+                        <p class="item-title artist col-12"><a href="{% url 'music:artist' pk=artist.id %}">{{ artist.name }}</a></p>
+                        {% if artist.role %}
+                        <p class="role col-12">{{ artist.role.name }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="country">
+                        {% if artist.country %}<img src="/static/image/{{artist.country}}.png" alt="{{artist.country}}" class="country-symbol">{%endif%}
+                    </div>
+
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'lib/quotes/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+
+
+<div class="main row flex-nowrap">
+    <div class="left col-sm-4">
+        <div class="left-content">
+            <h4><img src="/static/image/search.png" alt="">キーワード検索</h4>
+            <form method="GET" action="" id="searchform">
+                <input class="searchfield" id="searchbox" name="q" type="text" value="{{ request.GET.q }}" placeholder="Search..." />
+                <input type="submit" value="検索">
+            </form>
+            <h4><img src="/static/image/category.png" alt="">カテゴリ検索</h4>
+            <form method="GET" action="" id="selectbox">
+                <select name="c">
+                    <option selected="true" disabled="disabled">---------</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="カテゴリー選択">
+            </form>
+
+        </div>
+    </div>
+    <div class="right col-sm-8">
+        {% if quotes %}
+        {% if hits > 0 and query != None %}
+        <h3>「{{ query }}」を含む引用：{{hits}}件</h3>
+        {% endif %}
+        {% elif query %}
+        <p>「{{query}}」を含む引用は見つかりませんでした</p>
+        {% elif query == None %}
+        <p>{{ quotes.count }}件の引用</p>
+        {% else %}
+        <div class="alert alert-danger" role="alert">
+            <p>意図しない操作が要求されたためコンテンツを正常に表示できません。</p>
+        </div>
+        {% endif %}
+        <p>{{ quotes.count }}件の引用</p>
+        {% if qs_count %}
+        <div class="alert alert-success" role="alert">
+            <p>{{qs_count}}件の引用を、テーマ<a href="/lib/themes/{{target_theme.id}}" target="_blank">「{{target_theme}}」</a>に追加しました。</p>
+        </div>
+        {% endif %}
+
+
+        {% if cquery and quotes.count > 0 %}
+
+        <h3>「{{s_category}}」のカテゴリの引用：{{ quotes.count }}件</h3>
+        <p class="hit_books">(対象書籍数：{{books.count }}冊<a class="modal-button" data-toggle="modal" data-target="#excludes">絞り込み</a>)</p>
+
+        <!-- Modal -->
+        <div class="modal fade" id="excludes"" tabindex=" -1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">書籍フィルター</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body mx-auto mw-100">
+                        <form method="GET" action="" id="selectBooks">
+                            <ul>
+                                {% for book in books %}
+
+                                <li>
+                                    <div>
+                                        <input type="checkbox" name="excludes[]" value="{{book.id}}">{{ book.name }}
+                                    </div>
+                                </li>
+                                {% endfor %}
+                                <li><input type="hidden" name="cquery" value="{{ cquery }}"></li>
+                            </ul>
+                            <input type="submit" value="検索">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <p>検索結果から除外したい書籍を選択してください。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        {% elif cquery and quotes.count == 0 %}
+        <p>「{{s_category}}」のカテゴリの引用はありません。</p>
+        {% else %}
+        {% endif %}
+
+        <form action="/lib/quotes/" method="POST">
+            {% csrf_token %}
+            <div class="theme-add row">
+                <select name="pk" id="theme_pk" class="col-sm-8">
+                    <option selected="true" disabled="disabled">--- Select a Theme ---</option>
+                    {% for theme in themes %}
+                    <option value="{{ theme.id }}">{{ theme.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <input type="submit" value="Add Checked Quotes" class="col-sm-3">
+            </div>
+            <ul>
+                {% for quote in quotes %}
+
+                <li class="item">
+
+                    <div class="quote-box">
+                        <!-- <span class="count">{{ forloop.counter }}</span> -->
+                        <input type="checkbox" name="qs[]" value="{{quote.id}}">
+                        <a href="/admin/lib/quote/{{ quote.id }}/change/">
+
+                            <div class="body-box">
+                                <p class="body">{{ quote.body|linebreaks }}</p>
+                                <p>{{ quote.book.name }}</p>
+                            </div>
+                    </div>
+                    {% if quote.comment %}
+                    <div class="comment-box">
+
+                        <p class="comment">{{ quote.comment }}</p>
+                    </div>
+                    {% endif %}
+                    </a>
+                    {% if quote.image %}
+                    <a data-toggle="modal" data-target="#image_{{quote.id}}">
+                        <figure class="quote-image">
+                            <img src="{{quote.image.url}}" alt="{{quote.body|slice:":10"}}">
+                        </figure>
+                    </a>
+                    <!-- Modal -->
+                    <div class="modal fade" id="image_{{quote.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">{{ quote.book.name }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body mx-auto mw-100">
+                                    <img src="{{quote.image.url}}" alt="{{quote.body|slice:":10"}}">
+                                </div>
+                                <div class="modal-footer">
+                                    <p>{{ quote.body }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    {% endif %}
+
+
+                </li>
+                {% endfor %}
+            </ul>
+
+        </form>
+    </div>
+
+</div>
+
+
+
+{% endblock %}

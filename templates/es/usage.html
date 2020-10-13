@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'en/usage/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1 class="hero-title">HERO TITLE</h1>
+        <span class="vrt-hr"></span>
+        <p class="hero-subtitle">DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<h2>{{ usage.title }}</h2>
+<div class="description">
+    {{ usage.body|linebreaks }}
+</div>
+{% if usage.reference %}
+<div class="reference">
+    <img src="{{ usage.reference.url }}" alt="">
+</div>
+{% endif %}
+<div class="sentences">
+    <ul class="sentence-list">
+        {% for sentence in usage.sentence_set.all %}
+        <li class="sentence-item">
+            <div class="sentence-content row">
+                <p class="cols">{{ sentence.body|linebreaks }}</p>
+                <img class="col-sm-2" src="{{ sentence.image.url }}" alt="">
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+
+{% endblock %}

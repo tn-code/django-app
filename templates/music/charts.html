@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'music/index/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+{% include "components/alert.html" %}
+
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="listner-tab" data-toggle="tab" href="#listner" role="tab" aria-controls="listner" aria-selected="true">CHARTS</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="composer-tab" data-toggle="tab" href="#composer" role="tab" aria-controls="composer" aria-selected="false">STATS</a>
+    </li>
+
+</ul>
+<div class="tab-content" id="myTabContent">
+    <!-- 1st Tab Content -->
+    <div class="tab-pane fade show active" id="listner" role="tabpanel" aria-labelledby="listner-tab">
+
+        <div class="top-info">
+            <span class="artist-count count">ARTIST:{{artist_count}}</span>
+            <span class="track-count count">TRACK:{{track_count}}</span>
+            <span class="country-count count">COUNTRY:{{country_count}}</span>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <h4>Recent Top 10 Artists <a href="{% url 'music:artists' %}">VIEW ALL ARTISTS</a></h4>
+                <ul class="top-artists">
+                    {% for artist in top_artists %}
+                    <li>
+                        <div class="item-box row align-items-center justify-content-start">
+                            <span class="rank">{{ forloop.counter }}</span>
+                            <div class="cover artist">
+                                <img src="{{ artist.image.url}}" alt="">
+                            </div>
+                            <div class="column col-sm-6 flex-nowrap">
+                                <p class="item-title artist col-12">
+                                    {% if artist.id %}<a href="{% url 'music:artist' pk=artist.id %}">{% else %}<a>{% endif %}{{ artist.name }}</a></p>
+                                <p class="col-12">
+                                {% for genre in artist.genres %}
+                                    <span>#{{ genre }}</span>
+                                {% endfor %}
+                                </p>
+                            </div>
+                            <div class="position">
+                                {% if artist.position == 'SUPERUP' %}
+                                <img src="/static/image/superup.png" alt="Rank superup">
+                                {% elif artist.position == 'UP' %}
+                                <img src="/static/image/up.png" alt="Rank up">
+                                {% elif artist.position == 'SUPERDOWN' %}
+                                <img src="/static/image/superdown.png" alt="Rank superdown">
+                                {% elif artist.position == 'DOWN' %}
+                                <img src="/static/image/down.png" alt="Rank down">
+                                {% elif artist.position == 'EQUAL'%}
+                                <img src="/static/image/equal.png" alt="Same rank">
+                                {% elif artist.position == 'BACK'%}
+                                <img src="/static/image/back.png" alt="Back again">
+                                {% elif artist.position == 'NEW' %}
+                                <img src="/static/image/new.png" alt="New track">
+                                {% else %}
+                                <img src="/static/image/question.png" alt="Unknown track">
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="col-lg-6">
+                <h4>Recent Top 50 Tracks</h4>
+                <ul class="top-tracks">
+                    {% for track in top_tracks|slice:':50' %}
+                    <li>
+                        {% if track.position == 'NEW' %}
+                        <div class="item-box row align-items-center justify-content-start new">
+                            {% else %}
+                            <div class="item-box row align-items-center justify-content-start">
+                                {% endif %}
+
+                                <span class="rank col-1">{{ forloop.counter }}</span>
+                                <div class="cover col-2">
+                                    <img src="{{ track.image.url}}" alt="">
+                                </div>
+                                <div class="column col-6">
+                                    <p class="item-title">{{ track.name }}</p>
+                                    <p>
+                        {% for artist in track.artists %}
+                            <span><a href="{% url 'music:artist' pk=39 %}">{{ artist }}</a></span>
+                        {% endfor %}
+                        </p>
+                                </div>
+                                <div class="position col-1">
+                                    {% if track.position == 'UP' %}
+                                    <img src="/static/image/up.png" alt="Rank up">
+                                    {% elif track.position == 'DOWN' %}
+                                    <img src="/static/image/down.png" alt="Rank down">
+                                    {% elif track.position == 'EQUAL'%}
+                                    <img src="/static/image/equal.png" alt="Same rank">
+                                    {% elif track.position == 'BACK'%}
+                                    <img src="/static/image/back.png" alt="Back again">
+                                    {% elif track.position == 'NEW' %}
+                                    <img src="/static/image/new2.png" alt="New track">
+                                    {% else %}
+                                    <img src="/static/image/question.png" alt="Unknown track">
+                                    {% endif %}
+                                </div>
+                            </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+    <!-- 2nd Tab Content-->
+    <div class="tab-pane fade" id="composer" role="tabpanel" aria-labelledby="composer-tab">
+        <section class="stats">
+            <img src="{% url 'music:plot'  %}">
+        </section>
+    </div>
+
+</div>
+
+
+
+{% endblock %}
+{% if user.is_superuser %}
+{% block footer %}
+<a href="https://spotipy.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">Spotipy Docs</a>
+<a href="https://developer.spotify.com/dashboard/applications" target="_blank" rel="noopener noreferrer">Spotify for Developers</a>
+<a href="https://developer.spotify.com/documentation/web-api/reference-beta/" target="_blank" rel="noopener noreferrer">Web API</a>
+
+{% endblock %}
+{% endif %}

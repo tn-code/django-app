@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'es/index/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1 class="hero-title">HERO TITLE</h1>
+        <span class="vrt-hr"></span>
+        <p class="hero-subtitle">DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+{% include "components/alert.html" %}
+
+<div class="upper row justify-content-start align-items-center">
+    <div class="all-terms">
+        <a class="lexicon" href="{% url 'en:lexicon'%}">
+            <span class="lexicon_left">Todos Términos</span><span class="total">{{ total }}</span>
+        </a>
+
+    </div>
+    <div class="sub_nav">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Inicio</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" id="communication-tab" data-toggle="tab" href="#communication" role="tab" aria-controls="communication" aria-selected="false">CONVERSATION</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="appendix-tab" data-toggle="tab" href="#appendix" role="tab" aria-controls="appendix" aria-selected="false">LECTURE</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="quizzes-tab" data-toggle="tab" href="#quizzes" role="tab" aria-controls="quizzes" aria-selected="false">QUIZZES</a>
+            </li>
+        </ul>
+
+    </div>
+    <div class="searchBox">
+        <form method="GET" action="{% url 'es:search' %}" id="searchform" class="row en-search">
+            <input class="searchfield cols" id="searchbox" name="q" type="text" value="{{ request.GET.q }}" placeholder="Buscar..." />
+            <input type="submit" value="" class="cols main-search">
+        </form>
+    </div>
+
+
+    <div class="manage dropdown">
+        <button class="new_term dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="/static/common/settings_w.png" alt="" width=16px>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="{% url 'es:term_add' %}">Añadir un Término Nuevo</a>
+            <a class="dropdown-item" href="{% url 'en:sentence_add' %}">Añadir una Oración Nuevo</a>
+            <a class="dropdown-item" href="https://easypronunciation.com/es/spanish-phonetic-transcription-converter">Transcripción Fonética</a>
+        </div>
+    </div>
+
+
+</div>
+
+<hr>
+
+<section class="main-wrapper">
+
+    <div class="main-contents">
+        <!-- Tab Contents -->
+        <div class="tab-content" id="myTabContent">
+            <!-- First Tab -->
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <section class="home">
+                    <div class="pickup">
+                        <h2>PIKCUP!</h2>
+                        <div class="pickup-content row">
+                            <div class="image pickup col-sm-6">
+                                <a href="{{ pickup.source_link }}" target="_blank" rel="noopener noreferrer">
+                                    {% if pickup.term.image %}
+                                    <img src="{{ pickup.term.image.url}}" alt="">
+                                    {% elif pickup.image %}
+                                    <img src="{{ pickup.image.url}}" alt="">
+                                    {% else %}
+                                    <img src="/static/common/noimage_hor.png" alt="">
+                                    {% endif %}
+                                </a>
+                            </div>
+                            <div class="body pickup  col-sm-6">
+                                <div class="title pickup column">
+                                    <h3 class="pickup-term">
+{% if pickup.term %}
+<span class="conjugation">
+
+    {% if pickup.term.mood == 'SUBJUNCTIVE' %}
+    <span class="mood">que</span>
+    {% elif pickup.term.mood == 'IMPERATIVE'%}
+    <span class="mood imperative">¡</span>
+    {% endif %}
+    {% if pickup.term.persona == 'FIRST_S' %}
+    <span class="person">yo</span>
+    {% elif pickup.term.persona == 'SECOND_S' %}
+    <span class="person">tú</span>
+    {% elif pickup.term.persona == 'THIRD_S' %}
+    <span class="person">él/ella/usted</span>
+    {% elif pickup.term.persona == 'FIRST_P' %}
+    <span class="person">nosotros(-as)</span>
+    {% elif pickup.term.persona == 'SECOND_P' %}
+    <span class="person">vosotros(-as)</span>
+    {% elif pickup.term.persona == 'THIRD_P' %}
+    <span class="person">ellos/ellas/ustedes</span>
+    {% endif %}
+    {% if pickup.term.gender == 'MASCULINE' %}
+    <span class="gender-artcie">un/el</span>
+    {% elif pickup.term.gender == 'FEMININE' %}
+    <span class="gender-article">una/la</span>
+    {% endif %}
+
+</span>
+                                                        <a href="{% url 'es:term' pk=pickup.term.id%}">{{ pickup.term.name }}</a>
+                                                            {% if pickup.term.mood == 'IMPERATIVE'%}
+                                                            <span class="mood imperative">!</span>
+                                                            {% endif %}
+                                    {% if pickup.term.pronunciation %}
+                                    <span class="pronounce">({{ pickup.term.pronunciation }})</span>
+                                    {% endif %}
+                                                        {% if pickup.term.gender %}
+                                                        {% if pickup.term.gender == 'MASCULINE' %}
+                                                        <span class="gender masculine">
+                                                            MASCULINO
+                                                            {% else %}
+                                                            <span class="gender feminine">
+                                                                FEMININO
+                                                                {% endif %}
+                                                            </span>
+                                                        {% endif %}
+                                                                                            {% if pickup.term.definition_set.all.count > 0 %}
+                                                                                            <button class="definition-btn" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                                                                                <img src="/static/image/dict.png" class="xs-icon dict" alt="">
+                                                                                            </button>
+                                                                                            {% endif %}
+{% else %}
+<p class="generic">Generic Sentence</p>
+        {% endif %}
+
+        </h3>
+                                    {% if pickup.is_generic == False %}
+
+                                    {% if pickup.term.infinitive %}
+                                    <span class="infinitive">
+                                        (<img src="/static/image/infinitive.png" class="xs-icon infinitive-icon" alt="">
+
+                                        {{pickup.term.infinitive.name }})</span>
+                                    {% endif %}
+
+                                    {% endif %}
+                                </div>
+                                {% if pickup.term.definition_set.all.count > 0 %}
+                                <div class="collapse" id="collapseExample">
+                                    <div class="definition-card card card-body">
+                                        {% for definition in pickup.term.definition_set.all %}
+                                        <li class="definition-item row">
+                                            <span class="col-1 definition-counter">{{ forloop.counter}}</span>
+                                            <p class="col definition-body">{{ definition.definition }}</p>
+                                        </li>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                <div class="pickup-body">{{ pickup.body|linebreaks }}</div>
+
+                                <p class="source">{% if pickup.source_media != None %}
+                                <img src="/static/image/{{ pickup.source_media|lower }}.png" alt="" width="16px" height="16px" class="media-source">
+                                {% else %} －
+                                {% endif %}<a href="{{pickup.source_link}}">{{pickup.source_name}}</a></p>
+
+                                {% if pickup.term.synonyms %}
+                                <div class="pickup-synonyms">
+                                    <ul class="synonym-list">
+                                        {% for synonym in pickup.term.synonyms.all %}
+                                        <li class="synonym-item">
+                                            <a href="{% url 'en:term' pk=synonym.id %}">
+                                                {{ synonym.name }}
+                                            </a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endif %}
+
+                                {% if pickup.usage %}
+                                <div class="pickup_usage">
+                                    <a href="{% url 'en:usage' pk=pickup.usage.id %}">
+                                        <h6 class="pickup-usage-title">{{ pickup.usage.title }}</h6>
+                                    </a>
+                                    <p>{{ pickup.usage.body|slice:':100'|linebreaks }}{% if pickup.usage.body|length > 100 %}<a class="read-more-usage" href="{% url 'en:usage' pk=pickup.usage.id %}">READ MORE</a>{% endif %}</p>
+
+                                </div>
+                                {% endif %}
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <section class="middle row">
+                        <!-- Brand New Terms -->
+                        <div class="todays col-sm-6">
+                            {% if todays.count > 0 %}
+                            <div class="title todays row">
+                                <h2>Nuevos Términos</h2>
+                                <span> ({{ todays.count }})</span>
+                            </div>
+
+                            <ul class="row">
+                                <div class="col-sm-4 new-column">
+                                    {% for term in todays|slice:':10' %}
+                                    <li><a href="{% url 'es:term' pk=term.id %}">{{ term.name }}</a></li>
+                                    {% endfor %}
+                                </div>
+                                {% if todays.count > 10 %}
+                                <div class="col-sm-4 new-column">
+                                    {% for term in todays|slice:'10:20' %}
+                                    <li><a href="{% url 'es:term' pk=term.id %}">{{ term.name }}</a></li>
+                                    {% endfor %}
+
+
+                                </div>
+                                {% endif %}
+                                {% if todays.count > 20 %}
+                                <div class="col-sm-4 new-column">
+                                    {% for term in todays|slice:'20:30' %}
+                                    <li><a href="{% url 'es:term' pk=term.id %}">{{ term.name }}</a></li>
+                                    {% endfor %}
+
+
+                                </div>
+                                {% endif %}
+
+                            </ul>
+                            {% if todays_terms.count > 30 %}
+                            <a href="" class="more-new">View All Terms</a>
+                            {% endif %}
+                            {% else %}
+                            <h2>Nuevos Términos</h2>
+                            <p class="no_terms">－ No Terminos Añadido Hoy</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Usage -->
+                        <div class="title usages col-sm-6">
+                            <div class="usage-top row align-items-center justify-content-between">
+                                <h2><a href="{% url 'es:usages'%}">Usos</a></h2><span class="add"><a href="http://127.0.0.1:8000/admin/es/usage/add/"><span class="plus">+</span>Añadir</a></span></div>
+                            <ul class=" usage-list">
+                                {% for usage in usages|slice:':5' %}
+                                <li class="usage-item"><a href="{% url 'es:usage' pk=usage.id %}">{{ usage.title}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </section>
+
+
+
+                </section>
+
+            </div>
+
+
+            <!-- Third Tab -->
+            <div class="tab-pane fade" id="communication" role="tabpanel" aria-labelledby="communication-tab">
+                <section>
+                    <div class="row middle">
+
+                        <section class="templates col-sm-4">
+                            <div>
+                                <h2><a href="{% url 'en:templates' %}">Templates</a></h2>
+                                <ul>
+                                    {% for template in templates %}
+                                    <li><a href="{% url 'en:template' pk=template.id %}">{{ template.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </section>
+
+                        <section class="occasions col-sm-4">
+                            <div>
+                                <h2><a href="{% url 'en:occasions' %}">Occasions</a></h2>
+                                <ul>
+                                    {% for occasion in occasions %}
+                                    <li><a href="{% url 'en:occasion' pk=occasion.id%}">{{ occasion.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </section>
+
+                        <section class="genres col-sm-4">
+                            <div>
+                                <h2><a href="{% url 'en:genres' %}">Genres</a></h2>
+                                <ul>
+                                    {% for genre in genres %}
+                                    <li><a href="{% url 'en:genre' pk=genre.id %}">{{ genre.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </section>
+
+                    </div>
+                </section>
+
+
+            </div>
+            <!-- Fourth Tab -->
+            <div class="tab-pane fade" id="appendix" role="tabpanel" aria-labelledby="appendix-tab">
+
+                <section class="comparisons col-sm-4">
+                    <div>
+                        <h2><a href="{% url 'en:comparisons' %}">Comparisons</a></h2>
+                        <ul>
+                            {% for comparison in comparisons %}
+                            <li><a href="{% url 'en:comparison' pk=comparison.id %}">{{ comparison.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </section>
+                <section class="templates col-sm-4">
+                    <h2><a href="{% url 'en:grammars' %}">Grammars</a></h2>
+                </section>
+                <section class="paraphrase col-sm-4">
+                    <h2><a href="{% url 'en:paraphrase' %}">Paraphrase</a></h2>
+                </section>
+
+
+            </div>
+            <!-- Fifth Tab -->
+            <div class="tab-pane fade" id="quizzes" role="tabpanel" aria-labelledby="quizzes-tab">
+                <h2><a href="{% url 'en:quizzes' %}">Quizzes</a></h2>
+
+
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+<section>
+
+
+</section>
+
+{% endblock %}

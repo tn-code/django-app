@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+{% load embed_video_tags %}
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pharmacy/ingredient/style.scss' %}">
+{% endblock %}
+{% block title %}Pharmacy | MYAPP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block content %}
+<h2>{{ property.name}}</h2>
+<h3>{{ property.name_en }}</h3>
+
+<div class="description">
+    {{ property.memo|linebreaks}}
+</div>
+<ul class="ingredient-list">
+    {% for ingredient in ingredients %}
+    <li class="ingredient-item">
+        <a href="{% url 'pharmacy:ingredient' pk=ingredient.id %}">
+            {{ ingredient.name}}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% if property.property_images.count > 0 %}
+{% for image in property.property_images.all %}
+<img src="{{ image.image.url }}" alt="">
+{% endfor %}
+{% endif %}
+{% if property.video %}
+<div class="video-item">
+    <div>
+        {% video property.video 'tiny' %}
+
+
+    </div>
+</div>
+{% endif %}
+{% endblock %}

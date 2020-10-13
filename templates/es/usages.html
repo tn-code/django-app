@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'en/usages/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1 class="hero-title">HERO TITLE</h1>
+        <span class="vrt-hr"></span>
+        <p class="hero-subtitle">DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<ul class="usage-list row">
+
+
+    <div class="usage-item nav flex-column nav-pills col-4" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+        {% for usage in usages %}
+
+
+        {% if forloop.counter == 1 %}
+        <a class="usage-item-nav nav-link active" id="v-pills-{{usage.id}}-tab" data-toggle="pill" href="#v-pills-{{usage.id}}" role="tab" aria-controls="v-pills-{{usage.id}}" aria-selected="true">
+            <span class="counter">{{forloop.counter}}</span>
+            <h5>{{ usage.title }}</h5>
+
+        </a>
+        {% else %}
+        <a class="usage-item-nav nav-link" id="v-pills-{{usage.id}}-tab" data-toggle="pill" href="#v-pills-{{usage.id}}" role="tab" aria-controls="v-pills-{{usage.id}}" aria-selected="true">
+
+            <span class="counter">{{forloop.counter}}</span>
+            <h5>{{ usage.title }}</h5>
+        </a>
+        {% endif %}
+        {% endfor %}
+
+    </div>
+
+    <div class="tab-content col-8" id="v-pills-tabContent">
+        {% for usage in usages %}
+        {% if forloop.counter == 1 %}
+        <div class="tab-pane fade show active" id="v-pills-{{usage.id}}" role="tabpanel" aria-labelledby="v-pills-{{usage.id}}-tab">
+            <div class="usage-upper-info row justify-content-between align-items-center">
+                <h2>{{ usage.title }}</h2>
+                <a class="usage-edit" href="http://127.0.0.1:8000/admin/en/usage/{{usage.id}}/change/">Edit</a>
+            </div>
+
+            <div class="description">
+                {{ usage.body|linebreaks }}
+            </div>
+            {% if usage.reference %}
+            <div class="reference">
+                <img src="{{ usage.reference.url }}" alt="">
+            </div>
+            {% endif %}
+            <div class="sentences">
+                <ul class="sentence-list">
+                    {% for sentence in usage.sentence_set.all %}
+                    <li class="sentence-item">
+                        <a href="http://127.0.0.1:8000/admin/en/sentence/{{sentence.id}}/change/" class="sentence-link">
+                            <div class="sentence-content row">
+                                <p class="cols">{{ sentence.body|linebreaks }}</p>
+                                {% if sentence.image %}
+                                <img class="col-sm-2" src="{{ sentence.image.url }}" alt="">
+                                {% endif %}
+                            </div>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+
+        </div>
+        {% else %}
+        <div class="tab-pane fade" id="v-pills-{{usage.id}}" role="tabpanel" aria-labelledby="v-pills-{{usage.id}}-tab">
+
+            <div class="usage-upper-info row justify-content-between align-items-center">
+                <h2>{{ usage.title }}</h2>
+                <a class="usage-edit" href="http://127.0.0.1:8000/admin/en/usage/{{usage.id}}/change/">Edit</a>
+            </div>
+            <div class="description">
+                {{ usage.body|linebreaks }}
+            </div>
+            {% if usage.reference %}
+            <div class="reference">
+                <img src="{{ usage.reference.url }}" alt="">
+            </div>
+            {% endif %}
+            <div class="sentences">
+                <ul class="sentence-list">
+                    {% for sentence in usage.sentence_set.all %}
+                    <li class="sentence-item">
+                        <a href="http://127.0.0.1:8000/admin/en/sentence/{{sentence.id}}/change/" class="sentence-link">
+                            <div class="sentence-content row">
+                                <p class="cols">{{ sentence.body|linebreaks }}</p>
+                                {% if sentence.image %}
+                                <img class="col-sm-2" src="{{ sentence.image.url }}" alt="">
+                                {% endif %}
+                        </a>
+            </div>
+            </li>
+            {% endfor %}
+</ul>
+</div>
+
+
+</div>
+{% endif %}
+{% endfor %}
+</div>
+
+
+
+</ul>
+
+
+
+{% endblock %}

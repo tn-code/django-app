@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'lib/themes/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+
+<h1>Themes</h1>
+<ul class="row">
+    {% for theme in themes %}
+    <li class="col-sm-3">
+        <a href="/lib/themes/{{theme.id}}" class="column contentBox">
+            <div class="layerBase">
+                <figure>
+                    <img src="{{ theme.image.url}}" alt="{{ theme.name }}">
+                </figure>
+            </div>
+            <div class="layerOverlay">
+                <p>{{ theme.name}}</p>
+
+            </div>
+        </a>
+    </li>
+
+
+    {% endfor %}
+</ul>
+
+<div class="theme-form">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" class="save btn btn-primary" value="Add">
+    </form>
+</div>
+
+
+{% endblock %}

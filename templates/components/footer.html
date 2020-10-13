@@ -1,0 +1,75 @@
+{% load project_templatetags %}
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="/">MY APPLICATION</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown sign-up">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="/static/common/user.png" alt="">Hello, {% if user.is_authenticated %}
+                        {{ user.get_username }}
+                        {% endif %}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/about">About</a>
+                        {% if user.is_superuser %}
+                        <a class="dropdown-item" href="/admin">Manage Database</a>
+                        {% endif %}
+                        <div class="dropdown-divider"></div>
+
+                        {% if request.user.is_authenticated %}
+                        <a class="dropdown-item" href="{% url 'logout' %}">Sign out</a>
+                        {% endif %}
+                    </div>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/en">Classroom</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/arts">Museum</a>
+                </li>
+                {% if user.is_superuser %}
+                <li class="nav-item lib">
+                    <a class="nav-link" href="/lib">Library</a>
+                </li>
+                {% endif %}
+                <li class="nav-item cuisine">
+                    <a class="nav-link" href="/cuisine">Kitchen</a>
+                </li>
+                <li class="nav-item news">
+                    <a class="nav-link" href="/news">News</a>
+                </li>
+                {% if user.is_superuser %}
+                <li class="nav-item blog">
+                    <a class="nav-link" href="/blog">Posts</a>
+                </li>
+                {% endif %}
+            </ul>
+            <div class="header-right">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class=" current-time" href="/calendar">
+                            {% get_current_time "%Y/%m/%d" %}
+                            ({% get_day_of_week %})
+                            {% get_current_time '%H:%M' %}
+                        </a>
+                    </li>
+
+
+
+                    <form class="globalSearch nav-item form-inline my-2 my-lg-0" method="GET" action="/search/">
+                        <input class="form-control" type="search" placeholder="Search..." aria-label="Search" name="q">
+                        <button class="my-2 my-sm-0" type="submit"></button>
+                    </form>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

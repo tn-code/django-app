@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pages/about.scss' %}">
+{% endblock %}
+{% block title %}MY APP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>About</h1>
+        <p>Explore my application</p>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="content row">
+    <div class="aside col-sm-4">
+        <h3>Development Environment</h3>
+        <table>
+            <tr>
+                <th>Python</th>
+                <td>3.7.3</td>
+            </tr>
+            <tr>
+                <th>Django</th>
+                <td>2.2.7</td>
+            </tr>
+            <tr>
+                <th>Vue.js</th>
+                <td>2.2.7</td>
+            </tr>
+            <tr>
+                <th>Redis(Microsoft Open Tech)</th>
+                <td>3.2.100</td>
+            </tr>
+            <tr>
+                <th>SQLite</th>
+                <td>3.11.2</td>
+            </tr>
+            <tr>
+                <th>Bootstrap</th>
+                <td>4.4.1</td>
+            </tr>
+            <tr>
+                <th>jQuery</th>
+                <td>3.4.1</td>
+            </tr>
+
+        </table>
+        <h3>Packages</h3>
+        <table>
+            <tr>
+                <th>matplotlib</th>
+                <td>3.1.2</td>
+            </tr>
+            <tr>
+                <th>numpy</th>
+                <td>1.17.4</td>
+            </tr>
+            <tr>
+                <th>django-redis</th>
+                <td>4.10.0</td>
+            </tr>
+            <tr>
+                <th>spotipy</th>
+                <td>2.4.4</td>
+            </tr>
+            <tr>
+                <th>newsapi-python</th>
+                <td>0.2.6</td>
+            </tr>
+            <tr>
+                <th>pillow</th>
+                <td>6.2.1</td>
+            </tr>
+            <tr>
+                <th>django-nested-admin</th>
+                <td>3.2.4</td>
+            </tr>
+
+            <tr>
+                <th>django-environ</th>
+                <td>0.4.5</td>
+            </tr>
+            <tr>
+                <th>django-summernote</th>
+                <td>0.8.11.4</td>
+            </tr>
+            <tr>
+                <th>django-markdownify</th>
+                <td>0.8.0</td>
+            </tr>
+
+            <tr>
+                <th>django-embed-video</th>
+                <td>1.3.1</td>
+            </tr>
+
+
+            <tr>
+                <th>django-sass-processor</th>
+                <td>0.7.5</td>
+            </tr>
+            <tr>
+                <th>django-compressor</th>
+                <td>2.3</td>
+            </tr>
+            <tr>
+                <th>libsass</th>
+                <td>0.19.4</td>
+            </tr>
+
+            <tr>
+                <th>rcssmin</th>
+                <td>1.0.6</td>
+            </tr>
+
+            <tr>
+                <th>rjsmin</th>
+                <td>1.1.0</td>
+            </tr>
+
+
+
+
+
+        </table>
+        {% if user.is_superuser %}
+        <h4>Developer Services</h4>
+        <ul class="row flex-wrap tech-links">
+            <li class="col-sm-3 tech-item">
+                <div>
+                    <a href="https://github.com/" target="_blank" rel="noopener noreferrer">
+                        <img src="/static/common/github.png" alt="github">
+                    </a>
+                </div>
+            </li>
+
+            <li class="col-sm-3 tech-item">
+                <div>
+                    <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer">
+                        <img src="/static/common/gcp.png" alt="gcp">
+                    </a>
+                </div>
+            </li>
+            <li class="col-sm-3 tech-item">
+                <div>
+                    <a href="https://console.firebase.google.com/" target="_blank" rel="noopener noreferrer">
+                        <img src="/static/common/firebase.png" alt="firebase">
+                    </a>
+                </div>
+            </li>
+            <li class="col-sm-3 tech-item">
+                <div>
+                    <a href="https://cloud.ibm.com/login" target="_blank" rel="noopener noreferrer">
+                        <img src="/static/common/ibm_mini.png" alt="ibm-cloud">
+                    </a>
+                </div>
+            </li>
+            <li class="col-sm-3 tech-item">
+                <div>
+                    <a href="https://www.algolia.com/" target="_blank" rel="noopener noreferrer">
+                        <img src="/static/common/algolia_mini.svg" alt="algolia">
+                    </a>
+                </div>
+            </li>
+            <li class="col-sm-3 tech-item">
+                <div>
+                    <a href="https://www.djangoproject.com/" target="_blank" rel="noopener noreferrer">
+                        <img src="/static/common/django_mini.png" alt="django">
+                    </a>
+                </div>
+            </li>
+            <li class="col-sm-3 tech-item">
+                <div>
+                    <a href="https://www.python.org/" target="_blank" rel="noopener noreferrer">
+                        <img src="/static/common/python_mini.png" alt="python">
+                    </a>
+                </div>
+            </li>
+            <li class="col-sm-3 tech-item">
+                <div>
+                    <a href="https://vuejs.org/" target="_blank" rel="noopener noreferrer">
+                        <img src="/static/common/vue_mini.png" alt="vue">
+                    </a>
+                </div>
+            </li>
+        </ul>
+        {% endif %}
+    </div>
+    <div class="main col-sm-8">
+
+        <h2>Apllication Overview</h2>
+        <div class="icon-image">
+            <img src="/static/common/myapp_icon.png" alt="" class="icon">
+            <img src="/static/common/logo.png" alt="" class="logo">
+        </div>
+
+        <p>An offline integrated management application designed for personal use.</p>
+
+
+        <h2>Development System Overview</h2>
+        <ul>
+            <li>Project designing based on MTV architecture using <a href="https://www.djangoproject.com/" target="_blank" rel="noopener noreferrer">Django</a>, one of <a href="https://www.python.org/" target="_blank" rel="noopener noreferrer">Python</a> web frameworks</li>
+            <li>Server-assisted client side caching with <a href="https://redis.io/" target="_blank" rel="noopener noreferrer">Redis</a>, a type of NoSQL that stores data with key-value structure</li>
+            <li>Style coding with <a href="https://sass-lang.com/" target="_blank" rel="noopener noreferrer">SASS(Scss)</a>, a CSS preprocessor, to organize codes in better visibility and efficiency</li>
+            <li><a href="https://getbootstrap.com/" target="_blank" rel="noopener noreferrer">Bootstrap</a>, a CSS framework, for grid system, responsive mobile design and dynamic interactive DOM handling with built-in <a href="https://jquery.com/" target="_blank" rel="noopener noreferrer">jQuery</a></li>
+            <li>Data manipulating with third-party APIs including News API</li>
+            <li>Object-oriented database handling using O/R mapper</li>
+            <li><a href="https://matplotlib.org/" target="_blank" rel="noopener noreferrer">Matplotlib</a> for plotting graphs and charts along with database</li>
+            <li><a href="https://vuejs.org/" target="_blank" rel="noopener noreferrer">Vue.js</a> for interactive SPA-based client-side rendering as well as async requests with Axios</li>
+        </ul>
+    </div>
+</div>
+<div class="apps-content">
+    <div class="apps row flex-wrap">
+    </div>
+
+</div>
+
+{% endblock %}

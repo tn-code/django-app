@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pharmacy/property/style.scss' %}">
+{% endblock %}
+{% block title %}Pharmacy | MYAPP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="content-wrap">
+    <h4 class="term-en">{{term.name_en}}</h4>
+    <h3>{{term.name}}</h3>
+    {% if term.term_images.count > 0%}
+    {% for image in term.term_images.all %}
+    <ul class="image-list row">
+        <li class="image-item">
+            <img src="{{ image.image.url}}" alt="" class="term-image">
+        </li>
+    </ul>
+    {% endfor %}
+    {% endif %}
+    <div class="">
+        {{term.description|linebreaks}}
+    </div>
+    <div class="relationships">
+        <h5 class="relation-title">Related Terms</h5>
+        <ul class="relation-list row">
+            {% for relation in term.relationships.all %}
+            <li class="relation-item">
+                <a href="{% url 'pharmacy:term' pk=relation.id%}">
+                    {{ relation.name }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pages/about.scss' %}">
+{% endblock %}
+{% block title %}MY APP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>About</h1>
+        <p>Explore my application</p>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="content">
+    {% if flag == True %}
+
+    {% if books.count > 0 %}
+    <h2>Books</h2>
+    {% if books.count > 10 %}
+    <span class="more">Showing 10 results <a href="#">See more</a></span>
+    {% endif %}
+
+    <ul>
+        {% for book in books|slice:':10' %}
+        <li><a href="/lib/books/{{ book.id }}">{{ book.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if quotes.count > 0 %}
+    <h2>Quotes</h2>
+    {% if quotes.count > 10 %}
+    <span class="more">Showing 10 results <a href="#">See more</a></span>
+    {% endif %}
+    <ul>
+        {% for quote in quotes|slice:':10' %}
+        <li><a href="/lib/quotes/{{ quote.id }}">{{ quote.body|slice:':20' }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if themes.count > 0 %}
+    <h2>Themes</h2>
+    {% if themes.count > 10 %}
+    <span class="more">Showing 10 results <a href="#">See more</a></span>
+    {% endif %}
+    <ul>
+        {% for theme in themes|slice:':10' %}
+        <li><a href="/lib//themes/{{ theme.id }}">{{ theme.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if dishes_n.count > 0 %}
+    <h2>Dishes(名称に含む)</h2>
+    {% if dishes_n.count > 10 %}
+    <span class="more">Showing 10 results <a href="#">See more</a></span>
+    {% endif %}
+    <ul>
+        {% for dish in dishes_n|slice:':10' %}
+        <li><a href="/cuisine/dishes/{{ dish.id }}">{{ dish.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if dishes_f.count > 0 %}
+    <h2>Dishes({{ food.name }}を含む料理)</h2>
+    {% if dishes_f.count > 10 %}
+    <span class="more">Showing 10 results <a href="#">See more</a></span>
+    {% endif %}
+    <ul>
+        {% for dish in dishes_f|slice:':10' %}
+        <li><a href="/cuisine/dishes/{{ dish.id }}">{{ dish.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if works.count > 0 %}
+    <h2>Works</h2>
+    {% if works.count > 10 %}
+    <span class="more">Showing 10 results <a href="#">See more</a></span>
+    {% endif %}
+    <ul>
+        {% for work in works|slice:':10' %}
+        <li><a href="/arts/works/{{ work.id }}">{{ work.title_jp }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if exhibitions.count > 0 %}
+    <h2>Exhibitions</h2>
+    {% if exhibitions.count > 10 %}
+    <span class="more">Showing 10 results <a href="#">See more</a></span>
+    {% endif %}
+    <ul>
+        {% for exhibition in exhibitions|slice:':10' %}
+        <li><a href="/arts/exhibitions/{{ exhibition.id }}">{{ exhibition.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if artists.count > 0 %}
+    <h2>Artists</h2>
+    {% if artists.count > 10 %}
+    <span class="more">Showing 10 results <a href="#">See more</a></span>
+    {% endif %}
+    <ul>
+        {% for artist in artists|slice:':10' %}
+        <li><a href="/arts/artists/{{ artist.id }}">{{ artist.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if genres.count > 0 %}
+    <h2>Art Genres</h2>
+    {% if genres.count > 10 %}
+    <span class="more">Showing 10 results <a href="#">See more</a></span>
+    {% endif %}
+    <ul>
+        {% for genre in genres|slice:':10' %}
+        <li><a href="/arts/genres/{{ genre.id }}">{{ genre.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if terms.count > 0 %}
+    <h2>Terms</h2>
+    {% if terms.count > 10 %}
+    <span class="more">Showing 10 results <a href="#">See more</a></span>
+    {% endif %}
+    <ul>
+        {% for term in terms|slice:':10' %}
+        <li><a href="/en/terms/{{ term.id }}">{{ term.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if sentences.count > 0 %}
+    <h2>Sentences</h2>
+    {% if sentences.count > 10 %}
+    <span class="more">Showing 10 results <a href="#">See more</a></span>
+    {% endif %}
+    <ul>
+        {% for sentence in sentences|slice:':10' %}
+        <li><a href="/en/terms/{{sentence.term.id }}">{{ sentence.body }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+
+    {% else %}
+    <p>No matching for {{ query }}</p>
+    {% endif %}
+
+</div>
+
+
+{% endblock %}

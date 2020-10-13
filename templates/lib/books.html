@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'lib/books/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        {% if category %}
+        <h4 class="category-title">Category</h4>
+        <h1 class="category-body">{{category.name_en}}</h1>
+        {% else %}
+        <h1 class="hero-title-other">All Books</h1>
+        <p>Reading Management</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+{% include "components/alert.html" %}
+
+<div class="row justify-content-between align-items-center">
+    <p class="col-sm-6 num"><img src="/static/image/book.png" alt="" class="xs-icon">{{ books.count }}冊の書籍</p>
+    <div class="searchBox">
+        <form method="GET" action="" id="searchform">
+            <input class="searchfield" id="searchbox" name="q" type="text" value="{{ request.GET.q }}" placeholder="Enter a keyword" />
+            <input type="submit" value="Search">
+        </form>
+    </div>
+</div>
+
+<div class="upper-box">
+    <ul class="row flex-wrap">
+        {% for book in books %}
+        <li class="item col-sm-6">
+            <a href="/lib/books/{{book.id}}" class="row">
+                <div class="left col-4 col-sm-12 col-md-4">
+                    {% if book.read_at == Null %}
+                    <figure class="image">
+                        {% else %}
+                        <figure class="image read">
+                            {% endif %}
+
+                            {% if book.image %}
+                            <img src="{{book.image.url}}" alt="{{book.name}}">
+                            {% else %}
+                            <img src="/static/common/noimage_vrt.png" alt="No Image">
+                            {% endif %}
+                        </figure>
+                        {% if book.rate == Null %}
+                        <span class="rate-null">No Reviews</span>
+                        {% else %}
+                        <span class="rate">
+
+                            {% if book.rate == 1 %}
+                            ★☆☆☆☆☆
+                            {% elif book.rate == 2 %}
+                            ★★☆☆☆
+                            {% elif book.rate == 3 %}
+                            ★★★☆☆
+                            {% elif book.rate == 4 %}
+                            ★★★★☆
+                            {% elif book.rate == 5 %}
+                            ★★★★★
+                            {% endif %}
+                            {% endif %}
+                        </span>
+
+
+                </div>
+                <div class="right col-8 col-sm-12 col-md-8">
+                    <h2>{{book.name}}({{book.publisher }})</h2>
+                    <div class="meta">
+                        <p>{{book.author }}</p>
+                        <span class="category">{{book.category.name }}</span>
+                        <p>出版日：{{book.published_at|date:"j/m/Y" }}</p>
+                    </div>
+
+                    <p>{{book.overview|linebreaks|slice:":120" }}...</p>
+                </div>
+            </a>
+            <div class="tags">
+                {% for tag in book.tags.all %}
+                #{{ tag.name }}
+                {% endfor %}
+            </div>
+        </li>
+        {% endfor %}
+
+</div>
+
+</div>
+
+{% endblock %}

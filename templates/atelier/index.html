@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'atelier/index//style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1 class="page-title">HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+{% endblock %}
+{% block content %}
+
+<table>
+    <tr class="row">
+        <td class="blank col-sm-2 red"><a href="">TIPS</a></td>
+        <td class="col-sm-2 green"><a href="">WORKS</a></td>
+        <td class="blank col-sm-2"></td>
+        <td class="blank col-sm-2"></td>
+        <td class="blank col-sm-2"></td>
+        <td class="blank col-sm-2"></td>
+    </tr>
+
+</table>
+
+{% endblock %}

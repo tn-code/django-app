@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+{% load embed_video_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'music/track/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+
+{% endblock %}
+{% block content %}
+
+{% include "components/alert.html" %}
+
+<h2>{{ instrument.name }}</h2>
+<div class="overview">
+    {{ instrument.overview|linebreaks}}
+</div>
+
+<div class="articles">
+    {% if instrument.tips.count > 0 %}
+    {% for article in instrument.tips.all %}
+    <a href="{% url 'music:usage' pk=article.id %}">{{ article.name}}</a>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

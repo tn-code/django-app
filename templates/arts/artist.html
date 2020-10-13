@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'arts/artist/style.scss' %}">
+{% endblock %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+
+<div class="row">
+    {% if artist.image  %}
+    <div class="col-sm-4">
+        <a data-toggle="modal" data-target="#image_{{artist.id}}">
+            <figure class="quote-image">
+                <figure class="image">
+                    <img src="{{artist.image.url}}" alt="{{artist.name_jp}}" class="zoom-in">
+                </figure>
+        </a>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="image_{{artist.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-body mx-auto mw-100">
+                    <img src="{{artist.image.url}}" alt="{{quote.body|slice:":10"}}">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times; CLOSE</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        {% else %}
+        <div class="col-12">
+            {% endif %}
+
+
+            <h2 data-toggle="tooltip" data-placement="top" title="{{artist.name_jp}}">{{ artist.name_jp}}({{ artist.name }})</h2>
+            <div class="meta">
+                <p>({{ artist.birth_date}} - {{ artist.death_date }})</p>
+                <p>{{ artist.country }}</p>
+                {% for genre in artist.genre.all %}
+                <a href="/arts/genres/{{ genre.id }}">
+                    <span>{{ genre.name }}</span>
+                </a>
+                {% endfor %}
+            </div>
+
+            <p>{{artist.description|linebreaks }}</p>
+
+        </div>
+
+
+
+    </div>
+    <h3 class="hl">主な作品</h3>
+    <div class="row">
+
+        <ul class="row">
+            {% for work in artist.work_set.all %}
+            <li class="col-sm-4">
+                <a href="/arts/works/{{ work.id }}">
+                    <img src="{{ work.image.url }}" alt="">
+                    <p>{{ work.title_jp }}</p>
+                </a>
+            </li>
+            {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

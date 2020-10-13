@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'en/genre/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<div class="genre">
+    <h2>{{ genre.name }}</h2>
+    <div class="genre_image">
+        {% if genre.image %}
+        <img src="{{ genre.image.url }}" alt="">
+        {% else %}
+        <img src="/static/common/noimage_vrt.png" alt="">
+        {% endif %}
+    </div>
+    <ul>
+        {% for term in terms %}
+        <li>
+            <div class="item-content">
+                <h5><a href="{% url 'en:term' pk=term.id %}">{{ term.name }}</a></h5>
+
+                {% if term.image %}
+                <div class="term_image">
+                    <img src="{{ term.image.url }}" alt="">
+                </div>
+                {% endif %}
+
+                {% if term.sentences_related %}
+                <div class="sentences">
+                    {% for sentence in term.sentences_related.all %}
+                    <div class="sentence">
+        <li>{{ sentence.body }}</li>
+        {% if sentence.image %}
+        <div class="source_image">
+            <img src="{{ sentence.image.url}}" alt="">
+        </div>
+        {% endif %}
+        <p><a href="{{ sentence.source_link}}">{{ sentence.source_name }}</a></p>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+</div>
+</li>
+{% endfor %}
+</ul>
+</div>
+
+
+{% endblock %}

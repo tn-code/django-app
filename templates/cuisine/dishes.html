@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'cuisine/dishes/style.scss' %}">
+{% endblock %}
+{% block title %}MY KITCHEN{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <div class="inner-text">
+            <h1>My Kitchen</h1>
+            <p>Explore Your Own Recipe</p>
+
+        </div>
+        <div class="searchBox">
+            <form method="GET" action="" id="searchform">
+                <input class="searchfield" id="searchbox" name="q" type="text" value="{{ request.GET.q }}" placeholder="Enter a keyword" />
+                <input type="submit" value="Search">
+            </form>
+        </div>
+
+
+    </div>
+
+</div>
+{% endblock %}
+{% block content %}
+
+
+
+
+{% for dishes in dishes_ls %}
+<p>{{ dishes }}</p>
+
+{% for dish in dishes %}
+<p>{{ dish }}</p>
+{% endfor %}
+{% endfor %}
+{% if q %}
+「{{q}}」の検索結果:
+{% if foods != None %}
+{% for food in foods %}
+食材：{{ food.name }}
+{% endfor %}
+{% else %}
+食材：該当する食材は見つかりません。
+{% endif %}
+{% endif %}
+
+{% if '/types' in request.path %}
+
+<h3>{{ type.name }}</h3>
+<div>
+    <ul class="row flex-wrap">
+        {% for dish in dishes %}
+        <li class="item col-sm-6 col-md-4 col-lg-3">
+            <a href="/cuisine/dishes/{{dish.id}}">
+                <div class="item-box">
+                    <figure class="image">
+                        {% if dish.image %}
+                        <img src="{{dish.image.url}}" alt="{{dish.name}}">
+                        {% else %}
+                        <img src="{% static 'image/noimg.jpg' %}" alt="{{dish.name}}">
+                        {% endif %}
+                    </figure>
+                    <div class="caption">
+                        <!-- <span class="jp_mplus">{{ dish.name }}</span> -->
+                        <span class="en_script">{{ dish.name_alpha}}</span>
+                    </div>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% else %}
+<ul class="nav nav-tabs row" id="myTab" role="tablist">
+    <li class="nav-item cols">
+        <a class="nav-link active" id="mains-tab" data-toggle="tab" href="#tab_init" role="tab" aria-controls="mains" aria-selected="true">Mains</a>
+    </li>
+    <li class="nav-item cols">
+        <a class="nav-link" id="sides-tab" data-toggle="tab" href="#tab_sides" role="tab" aria-controls="sides" aria-selected="false">Sides</a>
+    </li>
+    <li class="nav-item cols">
+        <a class="nav-link" id="salads-tab" data-toggle="tab" href="#tab_salads" role="tab" aria-controls="salads" aria-selected="false">Salads</a>
+    </li>
+    <li class="nav-item cols">
+        <a class="nav-link" id="soups-tab" data-toggle="tab" href="#tab_soups" role="tab" aria-controls="soups" aria-selected="false">Soup</a>
+    </li>
+    <li class="nav-item cols">
+        <a class="nav-link" id="one-bowls-tab" data-toggle="tab" href="#tab_one_bowls" role="tab" aria-controls="one-bowls" aria-selected="false">One Bowls</a>
+    </li>
+    <li class="nav-item cols">
+        <a class="nav-link" id="desserts-tab" data-toggle="tab" href="#tab_desserts" role="tab" aria-controls="desserts" aria-selected="false">Desserts</a>
+    </li>
+    <li class="nav-item cols">
+        <a class="nav-link" id="bases-tab" data-toggle="tab" href="#tab_bases" role="tab" aria-controls="bases" aria-selected="false">Source/Dressings</a>
+    </li>
+
+</ul>
+<div class="tab-content" id="myTabContent">
+    <!-- Mains -->
+    <div class="tab-pane fade show active" id="tab_init" role="tabpanel" aria-labelledby="mains-tab">
+        <ul class="row flex-wrap">
+            {% for dish in mains %}
+            <li class="item col-sm-6 col-md-4 col-lg-3">
+                <a href="/cuisine/dishes/{{dish.id}}">
+                    <div class="item-box">
+                        <figure class="image">
+                            {% if dish.image %}
+                            <img src="{{dish.image.url}}" alt="{{dish.name}}">
+                            {% else %}
+                            <img src="{% static 'image/noimg.jpg' %}" alt="{{dish.name}}">
+                            {% endif %}
+                        </figure>
+                        <div class="caption">
+                            <!-- <span class="jp_mplus">{{ dish.name }}</span> -->
+                            <span class="en_script">{{ dish.name_alpha}}</span>
+                        </div>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- Sides-->
+    <div class="tab-pane fade" id="tab_sides" role="tabpanel" aria-labelledby="sides-tab">
+        <ul class="row flex-wrap">
+            {% for dish in sides %}
+            <li class="item col-sm-6 col-md-4 col-lg-3">
+                <a href="/cuisine/dishes/{{dish.id}}">
+                    <div class="item-box">
+                        <figure class="image">
+                            {% if dish.image %}
+                            <img src="{{dish.image.url}}" alt="{{dish.name}}">
+                            {% else %}
+                            <img src="{% static 'image/noimg.jpg' %}" alt="{{dish.name}}">
+                            {% endif %}
+                        </figure>
+                        <div class="caption">
+                            <!-- <span class="jp_mplus">{{ dish.name }}</span> -->
+                            <span class="en_script">{{ dish.name_alpha}}</span>
+                        </div>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- Salads-->
+    <div class="tab-pane fade" id="tab_salads" role="tabpanel" aria-labelledby="salads-tab">
+
+        <ul class="row flex-wrap">
+            {% for dish in salads %}
+            <li class="item col-sm-6 col-md-4 col-lg-3">
+                <a href="/cuisine/dishes/{{dish.id}}">
+                    <div class="item-box">
+                        <figure class="image">
+                            {% if dish.image %}
+                            <img src="{{dish.image.url}}" alt="{{dish.name}}">
+                            {% else %}
+                            <img src="{% static 'image/noimg.jpg' %}" alt="{{dish.name}}">
+                            {% endif %}
+                        </figure>
+                        <div class="caption">
+                            <!-- <span class="jp_mplus">{{ dish.name }}</span> -->
+                            <span class="en_script">{{ dish.name_alpha}}</span>
+                        </div>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- Salads-->
+    <div class="tab-pane fade" id="tab_soups" role="tabpanel" aria-labelledby="soups-tab">
+
+        <ul class="row flex-wrap">
+            {% for dish in soups %}
+            <li class="item col-sm-6 col-md-4 col-lg-3">
+                <a href="/cuisine/dishes/{{dish.id}}">
+                    <div class="item-box">
+                        <figure class="image">
+                            {% if dish.image %}
+                            <img src="{{dish.image.url}}" alt="{{dish.name}}">
+                            {% else %}
+                            <img src="{% static 'image/noimg.jpg' %}" alt="{{dish.name}}">
+                            {% endif %}
+                        </figure>
+                        <div class="caption">
+                            <!-- <span class="jp_mplus">{{ dish.name }}</span> -->
+                            <span class="en_script">{{ dish.name_alpha}}</span>
+                        </div>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- One Bowls-->
+    <div class="tab-pane fade" id="tab_one_bowls" role="tabpanel" aria-labelledby="one-bowls-tab">
+        <ul class="row flex-wrap">
+            {% for dish in one_bowls %}
+            <li class="item col-sm-6 col-md-4 col-lg-3">
+                <a href="/cuisine/dishes/{{dish.id}}">
+                    <div class="item-box">
+                        <figure class="image">
+                            {% if dish.image %}
+                            <img src="{{dish.image.url}}" alt="{{dish.name}}">
+                            {% else %}
+                            <img src="{% static 'image/noimg.jpg' %}" alt="{{dish.name}}">
+                            {% endif %}
+                        </figure>
+                        <div class="caption">
+                            <!-- <span class="jp_mplus">{{ dish.name }}</span> -->
+                            <span class="en_script">{{ dish.name_alpha}}</span>
+                        </div>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- Desserts-->
+    <div class="tab-pane fade" id="tab_desserts" role="tabpanel" aria-labelledby="desserts-tab">
+        <ul class="row flex-wrap">
+            {% for dish in desserts %}
+            <li class="item col-sm-6 col-md-4 col-lg-3">
+                <a href="/cuisine/dishes/{{dish.id}}">
+                    <div class="item-box">
+                        <figure class="image">
+                            {% if dish.image %}
+                            <img src="{{dish.image.url}}" alt="{{dish.name}}">
+                            {% else %}
+                            <img src="{% static 'image/noimg.jpg' %}" alt="{{dish.name}}">
+                            {% endif %}
+                        </figure>
+                        <div class="caption">
+                            <!-- <span class="jp_mplus">{{ dish.name }}</span> -->
+                            <span class="en_script">{{ dish.name_alpha}}</span>
+                        </div>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- Bases-->
+    <div class="tab-pane fade" id="tab_bases" role="tabpanel" aria-labelledby="bases-tab">
+        <ul class="row flex-wrap">
+            {% for dish in bases %}
+            <li class="item col-sm-6 col-md-4 col-lg-3">
+                <a href="/cuisine/dishes/{{dish.id}}">
+                    <div class="item-box">
+                        <figure class="image">
+                            {% if dish.image %}
+                            <img src="{{dish.image.url}}" alt="{{dish.name}}">
+                            {% else %}
+                            <img src="{% static 'image/noimg.jpg' %}" alt="{{dish.name}}">
+                            {% endif %}
+                        </figure>
+                        <div class="caption">
+                            <!-- <span class="jp_mplus">{{ dish.name }}</span> -->
+                            <span class="en_script">{{ dish.name_alpha}}</span>
+                        </div>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+
+<div class="row align-items-center justify-content-between">
+    <h5><img src="/static/image/dish.png" class="xs-icon" alt="">{{ dishes.count|default:"0" }}品の料理</h5>
+    <span class="new"><a href="/cuisine/dishes/new"><img src="/static/common/plus.png" alt="" class="xs-icon">New Dish</a></span>
+</div>
+<ul class="row flex-wrap">
+    {% for dish in dishes %}
+    <li class="item col-sm-6 col-md-4 col-lg-3">
+        <a href="/cuisine/dishes/{{dish.id}}">
+            <div class="item-box">
+                <figure class="image">
+                    {% if dish.image %}
+                    <img src="{{dish.image.url}}" alt="{{dish.name}}">
+                    {% else %}
+                    <img src="{% static 'image/noimg.jpg' %}" alt="{{dish.name}}">
+                    {% endif %}
+                </figure>
+                <div class="caption">
+                    <!-- <span class="jp_mplus">{{ dish.name }}</span> -->
+                    <span class="en_script">{{ dish.name_alpha}}</span>
+                </div>
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

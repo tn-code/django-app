@@ -1,0 +1,48 @@
+{% extends "blog/base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'blog/index/style.scss' %}">
+<link rel="stylesheet" href="{% sass_src 'blog/sidebar/style.scss' %}" type="text/css">
+{% endblock %}
+{% block title %}Diary{% endblock %}
+{% block content %}
+
+{% if posts %}
+<ul>
+    {% for post in posts %}
+    <li>
+        <div class="post-item row">
+            <div class="eye-catch col-sm-4">
+                {% if post.image %}
+                <img src="{{ post.image.url }}" alt="">
+                {% else %}
+                <img src="/static/common/noimage_hor.png" alt="">
+                {% endif %}
+            </div>
+            <div class="post-body col-sm-8">
+                <a href="{{post.slug}}">
+                    <div>
+                        <span class="published">{{ post.created_at }}</span>
+                        <h3>{{ post.title }}</h3>
+
+
+                    </div>
+                </a>
+                <div class="body">{{ post.body|safe|slice:':600' }}</div>
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %}
+
+</div>
+
+
+{% endblock %}

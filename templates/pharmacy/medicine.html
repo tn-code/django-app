@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+{% load embed_video_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pharmacy/medicine/style.scss' %}">
+{% endblock %}
+{% block title %}Pharmacy | MYAPP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="upper row">
+    <div class="left cols">
+        {% if medicine.image %}
+        <img src="{{ medicine.image.url }}" alt="" class="product-image">
+        {% endif %}
+        <p class="product-link"><a href="{{ medicine.link }}" target="_blank" rel="noopener noreferrer">製品情報</a></p>
+
+    </div>
+    <div class="right cols column">
+        <div class="upper row">
+            <h2>{{ medicine.name }}</h2>
+
+            {% if medicine.classification == "1" %}
+            <span class="class first">第1類医薬品</span>
+            {% elif medicine.classification == "D2" %}
+            <span class="class d-second">第<span class="designated">2</span>類医薬品</span>
+            {% elif medicine.classification == "2" %}
+            <span class="class second">第2類医薬品</span>
+            {% elif medicine.classification == "3" %}
+            <span class="class third">第3類医薬品</span>
+            {% elif medicine.classification == "DQ" %}
+            <span class="class d-quasi">指定医薬部外品</span>
+            {% elif medicine.classification == "Q" %}
+            <span class="class quasi">医薬部外品</span>
+            {% elif medicine.classification == "Q" %}
+            <span class="class quasi">医薬部外品</span>
+            {% elif medicine.classification == "P" %}
+
+            <span class="class prescription">医療用医薬品</span>
+            {% elif medicine.classification == "I" %}
+
+            <span class="class instruction">要指導医薬品</span>
+            {% endif %}
+
+            <p class="publisher">{{ medicine.publisher }}</p>
+
+            {% if related_medicines.count > 0 %}
+            <p class="relationship">
+                <span>類似医薬品</span>
+                {% for related in related_medicines %}<a class="related-item " href="{% url 'pharmacy:medicine' pk=related.id %}">{{ related.name }}</a>{% endfor %}
+            </p>
+            {% endif %}
+
+
+        </div>
+
+        <div class="lower row">
+            <div class="ingredient-wrap cols">
+                <h4 class="ingredient-title">INGREDIENTS</h4>
+                <ul class="ingredient-list">
+                    {% for ingredient in medicine.ingredients.all %}
+                    <li class="ingredient-item">
+                        <a href="{% url 'pharmacy:ingredient' pk=ingredient.id %}">
+                            {{ ingredient.name }}
+                        </a>
+                        {% if ingredient.effects.count > 0 %}
+                        <br>－ {% for effect in ingredient.effects.all%} <span class="effect">{{effect.name}} </span>{% endfor %}
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+            <div class="symptoms cols">
+                <h4 class="ingredient-title">SYMPTOMS</h4>
+                <ul class="ingredient-list">
+                    {% for symptom in medicine.symptoms.all %}
+                    <li class="ingredient-item">
+                        <a href="{% url 'pharmacy:symptom' pk=symptom.id %}">
+                            {{ symptom.name }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+
+    </div>
+    <span class="edit col"><a href="http://127.0.0.1:8000/admin/pharmacy/medicine/{{medicine.id}}/change/">Edit</a></span>
+
+</div>
+
+<hr class="content-break">
+<div class="row">
+    <div class="lower col-sm-6">
+        {{ medicine.overview|linebreaks}}
+    </div>
+
+    <div class="col-sm-6">
+        <div class="video-wrapper">
+
+            {% if medicine.video %}
+            <div class="video-item">
+                <div>
+                    {% video medicine.video 'tiny' %}
+
+
+                </div>
+            </div>
+            {% endif %}
+
+
+        </div>
+        <div class="illustration">
+            {% if medicine_images.count > 0 %}
+            {% for image in medicine_images %}
+            <a data-toggle="modal" data-target="#image_{{image.id}}">
+                <img class="my-image" src="{{image.image.url }}" alt="">
+            </a>
+            <!-- Modal -->
+            <div class="modal fade" id="image_{{image.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+
+                        <div class="modal-body mx-auto mw-100">
+                            <img src="{{image.image.url}}" alt="{{dish.name_alpha}}">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times; CLOSE</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

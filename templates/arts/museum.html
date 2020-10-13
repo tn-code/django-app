@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'arts/museum/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-sm-4">
+        <figure class="image">
+            {% if museum.image %}
+            <img src="{{museum.image.url}}" alt="{{museum.name}}">
+            {% endif %}
+        </figure>
+    </div>
+    <div class="col-sm-8">
+
+        <h5>{{ museum.name }}</h5>
+        <h2>{{museum.name_en}}
+            {% if museum.status == "PERM_CLOSED" %}
+            <span class="status perm">Permanently Closed</span>
+            {% elif museum.status == "TEMP_CLOSED" %}
+            <span class="status temp">Temporarily Closed</spanclass="status perm">
+            {% endif %}
+        </h2>
+
+        <div class="meta">
+            <p>Location：{{ museum.city }}, {{museum.country }}</p>
+            <p>Established： {{museum.established_at }}</p>
+            <p>
+                <span class="collection">Permanent Collections:
+                {% if museum.permanent == True %}○
+                {% else %}×
+                {% endif %}
+                </span>
+                                <span class="special">Special Exhibitions:
+                                    {% if museum.special == True %}○
+                                    {% else %}×
+                                    {% endif %}
+                                </span>
+        </p>
+            <p>Wesite： {{museum.website|urlize }}</p>
+        </div>
+
+        <p>{{museum.description|linebreaks }}</p>
+
+    </div>
+
+</div>
+
+{% if exhibitions %}
+<section class="exhibitions">
+    <ul class="row">
+        {% for exhibition in exhibitions %}
+        <li class="col-sm-2">
+            <a href="{% url 'arts:exhibition' pk=exhibition.id %}">
+                <div>
+                    <div class="image">
+                        {% if exhibition.image %}
+                        <img src="{{ exhibition.image.url }}" alt="{{ exhibition.name}}">
+                        {% endif %}
+                    </div>
+                    <h4>{{ exhibition.name_en }}</h4>
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}
+
+{% endblock %}

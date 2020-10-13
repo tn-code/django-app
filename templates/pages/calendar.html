@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pages/calender.scss' %}">
+{% endblock %}
+
+{% block title %}MY APP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+<button id="prev" type="button">前の月</button>
+<button id="next" type="button">次の月</button>
+<div id="calendar"></div>
+{% endblock %}
+{% block js %}
+<script type="text/javascript" src="{% static 'js/calender.js' %}">
+</script>
+{% endblock %}

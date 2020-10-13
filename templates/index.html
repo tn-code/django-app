@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+{% load project_templatetags %}
+
+{% block title %}MY APP{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'index/style.scss' %}">
+{% endblock %}
+{% block hero %}
+{% include "components/hero-slider.html" %}
+{% endblock %}
+
+
+{% block content %}
+{% if user.is_superuser %}
+<div class="content row">
+    <section class="calendar-wrap col-sm-8">
+
+        {% calendar %}
+
+    </section>
+    <section class="todo col-sm-4">
+        <div class="todo-upper row align-items-center">
+            <h3 class="todo-title">ToDo</h3>
+            <span class="bin"><a href="{% url 'utility:todos' %}"><img src="/static/common/bin.png" alt=""></a></span>
+        </div>
+        <ul class="todo-list">
+            {% for todo in  todos  %}
+            <li class="todo-item">
+                <div class="todo-body">
+
+
+                    <span class="status {{todo.status}}">{{todo.status}}</span><a href="http://127.0.0.1:8000/admin/utility/todo/{{ todo.id}}/change/">{{ todo.body }}</a>{% if todo.due %}<span class="due">{{todo.due }}</span>{% endif %}<span class="add-todo"><a href="http://127.0.0.1:8000/admin/utility/todo/{{ todo.id }}/change/">+</a></span>
+                </div>
+                {% if todo.comment %}
+                <div class="todo-comment">
+                    {{ todo.comment|linebreaks }}
+                </div>
+                {% endif %}
+                <ul class="items">
+                    {% for item in todo.item_set.all %}
+                    {% if item.status != 'DONE' %}
+                    <li><span class="status {{item.status}}">{{item.status}}</span><a href="http://127.0.0.1:8000/admin/utility/item/{{ item.id}}/change/">{{ item.body }}{% if item.due %} [{{item.due}}]{% endif %}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </li>
+
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+{% else %}
+<p class="alert alert-warning">
+Only limited contents are accessible as you are logged in as a guest. Contact with "he administrator to get valid user authentication before using this application.
+</p>
+{% endif %}
+
+{% endblock %}

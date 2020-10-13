@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pharmacy/medicines/style.scss' %}">
+{% endblock %}
+{% block title %}Pharmacy | MYAPP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="content-wrap">
+
+
+
+
+    <div class="medicine_tabs">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            {% for category in categories %}
+            <li class="nav-item active">
+                {% if forloop.counter == 1 %}
+                <a class="nav-link active show" id="category-{{category.id}}-tab" data-toggle="tab" href="#category-{{category.id}}" role="tab" aria-controls="tab_{{category.id}}" aria-selected="false">{{category.name}}</a>
+                {% else %}
+                <a class="nav-link" id="category-{{category.id}}-tab" data-toggle="tab" href="#category-{{category.id}}" role="tab" aria-controls="tab_{{category.id}}" aria-selected="false">{{category.name}}</a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            {% for category in categories %}
+            {% if forloop.counter == 1 %}
+            <div class="tab-pane fade show active" id="category-{{category.id}}" role="tabpanel" aria-labelledby="tab_{{category.id}}">
+                {% else%}
+                <div class="tab-pane fade show" id="category-{{category.id}}" role="tabpanel" aria-labelledby="tab_{{category.id}}">
+                    {% endif %}
+
+
+                    {% if category.description or category.symptoms.count > 0  %}
+                    <h5 class="sympton-title">OVERVIEW</h5>
+
+                    {% endif %}
+                    {% if category.symptoms.count > 0 %}
+
+                    <ul class="symptom-list row justify-content-end">
+                        {% for symptom in category.symptoms.all %}
+                        <li class="sympoton-item">
+                            <a href="{% url 'pharmacy:symptom' pk=symptom.id %}">
+                                {{ symptom.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% if category.category_images.count > 0%}
+                    <ul class="image-list row">
+                        {% for image in category.category_images.all %}
+                        <li class="image-item col-sm-2">
+                            <img src="{{ image.image.url }}" alt="">
+                            {% if image.caption %}
+                            <figcaption>{{image.caption}}</figcaption>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    <div class="row content-wrapper">
+                        <div class="column  col">
+                            {% if category.description %}
+                            <div class="description">
+                                {{category.description|linebreaks}}
+                            </div>
+                            {% if category.properties.count > 0 %}
+                            <ul class="property-list">
+                                {% for property in category.properties.all %}
+                                <li class="property-item">
+                                    <a href="{% url 'pharmacy:property' pk=property.id %}">
+                                        {{ property.name }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                            {% endif %}
+                        </div>
+
+                        {% if category.precautions.count > 0%}
+                        <div class="precautions col-sm-3">
+                            <h5 class="precaution-title">使用上の注意</h5>
+                            <ul class="precaution-list">
+                                {% for precaution in category.precautions.all %}
+
+                                <li class="precaution-item">
+
+                                    {% if precaution.type == 'PROHIBITION' %}
+                                    <span class="precaution-type prohibition">禁止</span>
+                                    {% elif precaution.type == 'CONSULTATION' %}
+                                    <span class="precaution-type consultation">相談</span>
+                                    {% elif precaution.type == 'PRECAUTION' %}
+                                    <span class="precaution-type precaution">注意</span>
+                                    {% endif %}
+                                    </span>
+
+                                    <span class="target">
+                                        {{ precaution.client.name }}
+
+                                    </span>
+                                    <span class="reason">
+                                        → {{ precaution.name }}
+
+                                    </span>
+
+
+                                </li>
+
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        <div class="ingredients-summary col-sm-3">
+                            <ul class="ingredient-summary-list">
+                                {% for ingredient in ingredients %}
+                                <li class="ingredient-summary-item">
+                                    {{ ingredient.name }}
+                                </li>
+                                {% endfor %}
+
+                            </ul>
+                        </div>
+
+                    </div>
+
+
+                    <ul class="medicine-list list-{{category.id}} row">
+
+                        {% for medicine in category.medicines.all %}
+                        <li class="medicine-item col-sm-2">
+                            <div class="item-inner row justify-content-between">
+                                <a class="cols" href="{% url 'pharmacy:medicine' pk=medicine.id%}">
+                                    <img src="{{ medicine.image.url }}" alt="">
+                                    <h4 class="product-name">{{ medicine.name }}</h4>
+                                </a>
+                                <p class="product-link"><a href="{{ medicine.link }}" target="_blank" rel="noopener noreferrer">製品情報</a></p>
+                                <ul class="ingredient-list">
+                                    {% for ingredient in medicine.ingredients.all %}
+                                    <li class="ingredient-item">
+                                        <a href="{% url 'pharmacy:ingredient' pk=ingredient.id %}">
+                                            {{ ingredient.name}}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                <p class="col">
+                            {% if medicine.classification == "1" %}
+                            <span class="class first">第1類医薬品</span>
+                            {% elif medicine.classification == "D2" %}
+                            <span class="class d-second">第<span class="designated">2</span>類医薬品</span>
+                            {% elif medicine.classification == "2" %}
+                            <span class="class second">第2類医薬品</span>
+                            {% elif medicine.classification == "3" %}
+                            <span class="class third">第3類医薬品</span>
+                            {% elif medicine.classification == "DQ" %}
+                            <span class="class d-quasi">指定医薬部外品</span>
+                            {% elif medicine.classification == "Q" %}
+                            <span class="class quasi">医薬部外品</span>
+                            {% elif medicine.classification == "P" %}
+
+                            <span class="class prescription">医療用医薬品</span>
+                            {% elif medicine.classification == "I" %}
+
+                            <span class="class instruction">要指導医薬品</span>
+                            {% endif %}
+                </p>
+
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}

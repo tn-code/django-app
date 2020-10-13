@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'utility/todos/style.scss' %}">
+{% endblock %}
+{% block title %}ToDo{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>Utility</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+<h4>ToDo</h4>
+
+<h3>DONE</h3>
+<ul class="done-list">
+    {% for todo in done %}
+    <li class="done-item">
+        <span class="parent">{{ todo.base.body }}</span> {{ todo.body }} [{{ todo.delete_at}}]
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

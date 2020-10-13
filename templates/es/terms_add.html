@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'es/terms_add/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+
+{% endblock %}
+{% block content %}
+<div class="bg-image"></div>
+<h3>Añadir un termino nuevo</h3>
+<hr class="top-hr">
+{% if form.errors %}
+{% for field in form %}
+{% for error in field.errors %}
+<div class="alert alert-danger">
+    <strong>{{ error|escape }}</strong>
+</div>
+{% endfor %}
+{% endfor %}
+{% for error in form.non_field_errors %}
+<div class="alert alert-danger">
+    <strong>{{ error|escape }}</strong>
+</div>
+{% endfor %}
+{% endif %}
+<iframe src="https://duckduckgo.com/search.html?width=250&site=https://www.spanishdict.com&prefill=Buscar&bgcolor=#dd761c" style="overflow:hidden;margin:0;padding:0;width:308px;height:40px;" frameborder="0"></iframe>
+<form action="" method="post" enctype="multipart/form-data">
+    <div class="upper row">
+
+        <section class="col-md-12 row">
+            <div class="col-sm-4">
+                <p>Nombre {{ form.name }}</p>
+                <p>Pronunciación {{ form.pronunciation }}</p>
+                <p>Tipo {{ form.type }}</p>
+                <p>Imagen {{ form.image }}</p>
+                <p>Nota {{ form.memo }}</p>
+                <p>Género {{form.gender }}</p>
+                <p>Persona {{ form.persona }}</p>
+                <p>Modo {{form.mood}}</p>
+                <p>Tiempo {{form.tense }}</p>
+            </div>
+            <div class="col-sm-4 basic-middle">
+                {{ definition_formset.management_form }}
+
+                {% for definition_form in definition_formset.forms %}
+                <div class="col-12 definition-item">
+                    <h5>Definición</h5>
+                    {{ definition_form.as_p }}
+                </div>
+
+                {% endfor %}
+            </div>
+            <div class="col-sm-4">
+                {{ sentence_formset.management_form }}
+                {% for sentence_form in sentence_formset %}
+
+                <div class="col-12">
+                    <h5>Oración</h5>
+                    {{ sentence_form.as_p }}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Añadir</button>
+</form>
+{% endblock %}

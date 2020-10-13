@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'pharmacy/index/style.scss' %}">
+{% endblock %}
+{% block title %}Pharmacy | MYAPP{% endblock %}
+
+
+{% block hero %}
+<div class="hero">
+    <div class="blue-overlay">
+        <div class="overlay-content">
+            <p class="overlay-subline">Your Health Management</p>
+            <h1 class="overlay-headline">Medical Clinic</h1>
+        </div>
+
+
+    </div>
+
+    <div class="hero-right">
+        <div class="hero-right-content">
+            <h2 class="hero-right-text">PHARMACY</h1>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="content-wrap">
+    <ul class="feature-list row">
+        <li class="feature-item col-sm-4">
+            <a href="{% url 'pharmacy:category' pk=1 %}">
+                <img src="/static/image/medicines.png" alt="">
+            </a>
+            <h3 class="feature-title">Products</h3>
+        </li>
+        <li class="feature-item col-sm-4">
+            <a href="{% url 'pharmacy:ingredients' %}">
+                <img src="/static/image/ingredients.png" alt="">
+            </a>
+            <h3 class="feature-title">Ingredients</h3>
+        </li>
+        <li class="feature-item col-sm-4">
+            <a href="{% url 'pharmacy:terms' %}">
+                <img src="/static/image/physiology.png" alt="">
+            </a>
+            <h3 class="feature-title">Physiology</h3>
+        </li>
+        <li class="feature-item col-sm-4">
+            <a href="{% url 'pharmacy:symptoms' %}">
+                <img src="/static/image/symptom.png" alt="">
+            </a>
+            <h3 class="feature-title">Symptopms</h3>
+        </li>
+        <li class="feature-item col-sm-4">
+            <a href="{% url 'pharmacy:laws' %}">
+                <img src="/static/image/law.png" alt="">
+            </a>
+            <h3 class="feature-title">Medical Laws</h3>
+        </li>
+        <li class="feature-item col-sm-4">
+            <a href="{% url 'pharmacy:documents'%}">
+                <img src="/static/image/record.png" alt="">
+            </a>
+            <h3 class="feature-title">Documents</h3>
+        </li>
+                <li class="feature-item col-sm-4">
+                    <a href="{% url 'pharmacy:kanpo'%}">
+                        <img src="/static/image/herbal.png" alt="">
+                    </a>
+                    <h3 class="feature-title">Japanese Kanpo</h3>
+                </li>
+    </ul>
+
+</div>
+<button class="quiz">QUIZ</button>
+
+<hr>
+
+
+<div class="manage dropdown">
+    <button class="new_term dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="/static/common/settings_w.png" alt="" width=16px>
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+        <a class="dropdown-item" href="#" target="_blank" rel="noopener noreferrer">LINK</a>
+        <a class="dropdown-item" href="#" target="_blank" rel="noopener noreferrer">LINK</a>
+        <a class="dropdown-item" href="#" target="_blank" rel="noopener noreferrer">LINK</a>
+        <a class="dropdown-item" href="#" target="_blank" rel="noopener noreferrer">LINK</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'music/index/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+{% include "components/alert.html" %}
+
+
+<h2>SOUND DESIGN TECHNIQUES & TIPS</h2>
+
+<a href="{% url 'music:usages' %}">Texhniques & Tips</a>
+<section class="progressions">
+    <a href="{% url 'music:chords' %}">Progressions & Analysis</a>
+</section>
+
+
+
+
+
+
+{% endblock %}
+{% if user.is_superuser %}
+{% block footer %}
+<a href="https://spotipy.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">Spotipy Docs</a>
+<a href="https://developer.spotify.com/dashboard/applications" target="_blank" rel="noopener noreferrer">Spotify for Developers</a>
+<a href="https://developer.spotify.com/documentation/web-api/reference-beta/" target="_blank" rel="noopener noreferrer">Web API</a>
+
+{% endblock %}
+{% endif %}

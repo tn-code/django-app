@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'cuisine/ingredients/style.scss' %}">
+{% endblock %}
+{% block title %}Ingredients{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <div class="inner-text">
+            <h1>INGREDIENTS</h1>
+            <p>Foods & Condiments Companion</p>
+
+        </div>
+        <div class="searchBox">
+            <form method="GET" action="" id="searchform">
+                <input class="searchfield" id="searchbox" name="q" type="text" value="{{ request.GET.q }}" placeholder="Enter a keyword" />
+                <input type="submit" value="Search">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<h3>Foods</h3>
+<ul class="ingredients">
+    {% for food in foods %}
+    <li class="ingredient-item food-item"><a href="{% url 'cuisine:food' pk=food.id %}">{{ food.name_en }}</a></li>
+    {% endfor %}
+</ul>
+<h3>Condiments</h3>
+<ul class="ingredients">
+    {% for condiment in condiments %}
+    <li class="ingredient-item condiment-item"><a href="{% url 'cuisine:condiment' pk=condiment.id %}">{{ condiment.name_en }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

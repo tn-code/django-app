@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'en/sentence_add/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<h3>Create new synonym combination</h3>
+<form action="" method="post">
+    <div class="form-content row">
+        <p>{{ form.from_term }} and {{ form.to_term }} <span class="new-term"><a href="{% url 'en:term_add' %}">Create new term</a></span></p>
+        <p>Formality: {{ form.formality }}</p>
+        <p>Paraphrase: {{ form.is_paraphrase }}</p>
+
+    </div>
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+{% endblock %}

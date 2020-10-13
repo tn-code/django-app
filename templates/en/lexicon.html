@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'en/lexicon/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <section class="col-sm-3">
+        <div>
+            <h2>Words ({{ count.terms }})</h2>
+
+            <!-- Accordion -->
+            <div class="accordion" id="termsAccordion">
+                {% for key, terms_query in terms.items %}
+                {% if terms_query.count > 0 %}
+                <div class="card words">
+                    <div class="card-header" id="heading_{{key}}">
+                        <h2 class="mb-0">
+                            <button type="button" class="btn btn-link words-accordion-title" data-toggle="collapse" data-target="#collapse_{{key}}">{{ key}}<span class="terms-count">({{terms_query.count }})</span></button>
+                        </h2>
+                    </div>
+                    <div id="collapse_{{key}}" class="collapse" aria-labelledby="heading_{{key}}" data-parent="#termsAccordion">
+                        <div class="card-body">
+                            {% for term in terms_query %}
+                            <li class="card-item"><a href="/en/terms/{{ term.id }}">
+                                    <h6 class="term-name">{{ term.name }}</h6><span class="term-proficiency"> {{term.proficiency}}</span></a></li>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <!-- Accordion -->
+        </div>
+    </section>
+
+
+    <section class="col-sm-3">
+        <div>
+            <h2>Phrases ({{ count.phrases }})</h2>
+            <!-- Accordion -->
+            <div class="accordion" id="phrasesAccordion">
+                {% for key, phrases_query in phrases.items %}
+                {% if phrases_query.count > 0 %}
+                <div class="card words">
+                    <div class="card-header" id="heading_phrases_{{key}}">
+                        <h2 class="mb-0">
+                                                    <button type="button" class="btn btn-link words-accordion-title" data-toggle="collapse" data-target="#collapse_phrases_{{key}}">{{ key}}<span class="terms-count">({{phrases_query.count }})</span></button>
+                                                </h2>
+                    </div>
+                    <div id="collapse_phrases_{{key}}" class="collapse" aria-labelledby="heading_phrases_{{key}}" data-parent="#phrasesAccordion">
+                        <div class="card-body">
+                            {% for term in phrases_query %}
+                            <li class="card-item"><a href="/en/terms/{{ term.id }}">
+                                    <h6 class="term-name">{{ term.name }}</h6><span class="term-proficiency"> {{term.proficiency}}</span></a></li>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <!-- Accordion -->
+
+        </div>
+    </section>
+    <section class="col-sm-3">
+        <div>
+            <h2>Phrasal Verbs ({{ count.phrasal_verbs }})</h2>
+            <!-- Accordion -->
+            <div class="accordion" id="phrasalVerbsAccordion">
+                {% for key, phrasal_verbs_query in phrasal_verbs.items %}
+                {% if phrasal_verbs_query.count > 0 %}
+                <div class="card words">
+                    <div class="card-header" id="heading_phrasal_verbs_{{key}}">
+                        <h2 class="mb-0">
+                                                                <button type="button" class="btn btn-link words-accordion-title" data-toggle="collapse" data-target="#collapse_phrasal_verbs_{{key}}">{{ key}}<span class="terms-count">({{phrasal_verbs_query.count }})</span></button>
+                                                            </h2>
+                    </div>
+                    <div id="collapse_phrasal_verbs_{{key}}" class="collapse" aria-labelledby="heading_phrasal_verbs_{{key}}" data-parent="#phrasalVerbsAccordion">
+                        <div class="card-body">
+                            {% for term in phrasal_verbs_query %}
+                            <li class="card-item"><a href="/en/terms/{{ term.id }}">
+                                    <h6 class="term-name">{{ term.name }}</h6><span class="term-proficiency"> {{term.proficiency}}</span></a></li>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <!-- Accordion -->
+        </div>
+    </section>
+
+
+    <section class="col-sm-3">
+        <div>
+            <h2>Advanced Basics ({{ count.advanceds }})</h2>
+            <!-- Accordion -->
+            <div class="accordion" id="advancedAccordion">
+                {% for key, advanced_query in advanceds.items %}
+                {% if advanced_query.count > 0 %}
+                <div class="card words">
+                    <div class="card-header" id="heading_advanced_{{key}}">
+                        <h2 class="mb-0">
+                                                                                    <button type="button" class="btn btn-link words-accordion-title" data-toggle="collapse" data-target="#collapse_advanced_{{key}}">{{ key}}<span class="terms-count">({{advanced_query.count }})</span></button>
+                                                                                </h2>
+                    </div>
+                    <div id="collapse_advanced_{{key}}" class="collapse" aria-labelledby="heading_advanced_{{key}}" data-parent="#advancedAccordion">
+                        <div class="card-body">
+                            {% for term in advanced_query %}
+                            <li class="card-item"><a href="/en/terms/{{ term.id }}">
+                                    <h6 class="term-name">{{ term.name }}</h6><span class="term-proficiency"> {{term.proficiency}}</span></a></li>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <!-- Accordion -->
+        </div>
+    </section>
+
+
+
+
+
+
+
+
+
+    <section class="col-sm-3">
+        <div>
+            <h2>Basics ({{ count.basics }})</h2>
+            <!-- Accordion -->
+            <div class="accordion" id="basicAccordion">
+                {% for key, basic_query in basics.items %}
+                {% if basic_query.count > 0 %}
+                <div class="card words">
+                    <div class="card-header" id="heading_basic_{{key}}">
+                        <h2 class="mb-0">
+                                                                    <button type="button" class="btn btn-link words-accordion-title" data-toggle="collapse" data-target="#collapse_basic_{{key}}">{{ key}}<span class="terms-count">({{basic_query.count }})</span></button>
+                                                                </h2>
+                    </div>
+                    <div id="collapse_basic_{{key}}" class="collapse" aria-labelledby="heading_basic_{{key}}" data-parent="#basicAccordion">
+                        <div class="card-body">
+                            {% for term in basic_query %}
+                            <li class="card-item"><a href="/en/terms/{{ term.id }}">
+                                    <h6 class="term-name">{{ term.name }}</h6><span class="term-proficiency"> {{term.proficiency}}</span></a></li>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <!-- Accordion -->
+        </div>
+    </section>
+
+    <section class="col-sm-3">
+        <div>
+            <h2>Compound Words ({{ count.compounds }})</h2>
+
+            <!-- Accordion -->
+            <div class="accordion" id="compoundAccordion">
+                {% for key, compound_query in compounds.items %}
+                {% if compound_query.count > 0 %}
+                <div class="card words">
+                    <div class="card-header" id="heading_compound_{{key}}">
+                        <h2 class="mb-0">
+                                                                                                            <button type="button" class="btn btn-link words-accordion-title" data-toggle="collapse" data-target="#collapse_compound_{{key}}">{{ key}}<span class="terms-count">({{compound_query.count }})</span></button>
+                                                                                                        </h2>
+                    </div>
+                    <div id="collapse_compound_{{key}}" class="collapse" aria-labelledby="heading_compound_{{key}}" data-parent="#compoundAccordion">
+                        <div class="card-body">
+                            {% for term in compound_query %}
+                            <li class="card-item"><a href="/en/terms/{{ term.id }}">
+                                    <h6 class="term-name">{{ term.name }}</h6><span class="term-proficiency"> {{term.proficiency}}</span></a></li>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <!-- Accordion -->
+        </div>
+    </section>
+    <section class="col-sm-3">
+        <div>
+            <h2>Loanwords</h2>
+            <ul>
+                {% for term in loanwords %}
+                <li><a href="/en/terms/{{ term.id }}">{{ term.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+
+    <section class="col-sm-3">
+        <div>
+            <h2>Templates</h2>
+            <ul>
+                {% for template in templates %}
+                <li><a href="/en/terms/{{ term.id }}">{{ template.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+
+</div>
+{% endblock %}

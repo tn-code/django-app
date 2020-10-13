@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'arts/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1 class="page-title">Museum of My Art Collection</h1>
+        <p>- Wide range of collections in you hand -</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+
+
+<section class=" exhibitions">
+
+    <div class="row align-items-center">
+        <h2>Exhibitions</h2><span class="show-all"><a href="/arts/exhibitions">View All Exhibitions</a></span>
+    </div>
+    <ul class="list row flex-wrap">
+        {% for exhibition in exhibitions %}
+        <li class="item col-sm-6 col-md-4 col-lg-2">
+            <a href="/arts/exhibitions/{{ exhibition.id }}">
+                <div class="item-box">
+                    <figure class="image">
+                        <img src="{{exhibition.image.url}}" alt="{{exhibition.name}}">
+                    </figure>
+                    <figcaption>{{ exhibition.name_en }}</figcaption>
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+
+<section class="museums">
+    <h2>Museums<span class="show-all"><a href="{% url 'arts:museums' %}">See more</a></span></h2>
+    <ul class="card-columns">
+        {% for museum in museums %}
+        <li class="card">
+            <a href="{% url 'arts:museum' pk=museum.id %}">
+                <div class="card-body">
+                    <figure class="image">
+                        {% if museum.image %}
+                        <img src="{{museum.image.url}}" alt="{{museum.name}}">
+                        {% endif %}
+                    </figure>
+                    <figcaption>{{ museum.name_en }}</figcaption>
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+
+<section class="works">
+    <h2>Works<span class="show-all"><a href="/arts/works">See more</a></span></h2>
+    <ul class="card-columns">
+        {% for work in works %}
+        <li class="card">
+            <a href="/arts/works/{{ work.id }}">
+                <div class="card-body">
+                    <figure class="image">
+                        <img src="{{work.image.url}}" alt="{{work.title_jp}}">
+                    </figure>
+                    <figcaption>{{ work.title_jp }}</figcaption>
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+
+<section class="works">
+    <h2>Designs<span class="show-all"><a href="{% url 'arts:designs'%}">See more</a></span></h2>
+    <ul class="card-columns">
+        {% for work in designs %}
+        <li class="card">
+            <a href="/arts/works/{{ work.id }}">
+                <div class="card-body">
+                    <figure class="image">
+                        <img src="{{work.image.url}}" alt="{{work.title_jp}}">
+                    </figure>
+                    <figcaption>{{ work.title_jp }}</figcaption>
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}
+{% if user.is_superuser %}
+{% block footer %}
+<a href="https://www.artic.edu/collection" target="_blank" rel="noopener noreferrer">The Art Institute of Chicago</a>
+{% endblock %}
+{% endif %}

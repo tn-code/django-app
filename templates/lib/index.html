@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'lib/index/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+
+</div>
+<div class="sideTop">
+    <h4>popop</h4>
+</div>
+<div class="pageHeader">
+    <ul class="pageNav">
+        <li>kjfkjf</li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="pageContent">
+    <div class="sideNav">
+        <h4 class="category-title">CATEGORIES</h4>
+        <ul class="category-list">
+            {% for category in categories %}
+            {% if category.book_set.count > 0 %}
+            <li class="category-item"><a href="{% url 'lib:category' pk=category.id %}">{{ category.name_en }}({{category.book_set.count }})</a></li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="mainContent">
+        <div class="right">
+            <section>
+                <div class="section-title row justify-content-between align-items-center">
+                    <h2>Recently Read Books</h2>
+                    <span class="add"><a href="{% url 'lib:book_add' %}">Add New Book</a></span>
+                </div>
+                <ul class="books row flex-wrap">
+                    {% for book in books %}
+                    <li class="item col-sm-6 col-md-4 col-lg-2">
+                        <div class="item-box">
+                            <a href="/lib/books/{{book.id}}">
+                                <figure class="image">
+                                    <img src="{{book.image.url}}" alt="{{book.name}}">
+                                </figure>
+                                <figcaption>{{ book.name }}</figcaption>
+                            </a>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <span class="show-all"><a href="/lib/books">View All Books</a></span>
+            </section>
+            <section class="quotes">
+                <h3 class="quote-title">－ Quote of the Moment －</h3>
+                <ul>
+                    <li>
+
+                        <p class="quote"><a href="/lib/quotes/{{ quote.id }}">{{ quote.body }}</a></p>
+                        <cite>－ <<a href="/lib/books/{{quote.book.id}}">{{ quote.book.name}}</a>></cite>
+
+                    </li>
+
+                </ul>
+                <span class="show-all"><a href="/lib/quotes">See All Quotes</a></span>
+
+            </section>
+            <section>
+                <div class="section-title row justify-content-between align-items-center">
+                    <h2>Statistics</h2>
+                    <span class="add"><a href="{% url 'lib:book_add' %}">View More Stats.</a></span>
+                </div>
+                <img src='{% url 'lib:plot'  %}' width=400 height=400>
+            </section>
+            <section>
+                <div class="themes">
+                    <h2>Themes</h2>
+                    <ul>
+                        {% for theme in themes %}
+                        <li><a href="/lib/themes/{{theme.id}}">
+                                <div class="box">
+                                    <figure class="theme-cover">
+                                        <img src="{{theme.image.url}}" alt="{{theme.name}}">
+                                    </figure>
+                                    <div class="inner">
+                                        <p class="title">{{theme.name }}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <span class="show-all"><a href="/lib/themes">See more</a></span>
+                </div>
+            </section>
+
+            <section class="memos">
+                <h2>Memos<span class="show-all"><a href="/lib/memos">See more</a></span></h2>
+                <ul class="card-columns">
+                    {% for memo in memos %}
+                    <li class="card">
+                        <div class="card-body">
+
+                            <p>{{ memo.body }}</p>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+            </section>
+
+        </div>
+    </div>
+
+
+</div>
+{% endblock %}

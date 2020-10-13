@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'cuisine/dishes/style.scss' %}">
+{% endblock %}
+{% block title %}MY KITCHEN{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <div class="inner-text">
+            <h1>HERO TITLE</h1>
+            <p>DESCRIPTION</p>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+{% block content %}
+<ul class="teas-list">
+    {% for tea in teas %}
+    <li>{{ tea.name }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'en/sentence_add/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<h3>Add New Sentence</h3>
+<form action="" method="post" enctype="multipart/form-data">
+    <div class="form-content row">
+        <p>{{ form.term }} or {{ form.template }}<span>*Select one of  them</span></span></p>
+        <p class="body">{{ form.body }}</p>
+        <p>Gneric: {{ form.is_generic }}</p>
+        <hr>
+        <h6>Source</h6>
+        <div class="source row">
+            <div class="left col-sm-6">
+                <p>Name: {{ form.source_name }}</p>
+                <p>Media: {{ form.source_media }}</p>
+                <p>URL: {{ form.source_link }}</p>
+
+
+            </div>
+            <div class="right col-sm-6">
+                <p>Image: {{ form.image }}</p>
+                <p>Usage: {{ form.usage }}</p>
+            </div>
+
+        </div>
+    </div>
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+
+
+
+{% endblock %}

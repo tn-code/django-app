@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'arts/genre/style.scss' %}">
+{% endblock %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>HERO TITLE</h1>
+        <p>DESCRIPTION</p>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-sm-6">
+        <h2>{{ genre.name }}</h2>
+        <div class="meta">
+            <p>主な画家</p>
+            {% for artist in artists %}
+            <span>
+                <a href="/arts/artists/{{artist.id}}">
+                    {{ artist.name_jp}}({{ artist.name }})
+                </a>
+            </span>
+            {% endfor %}
+        </div>
+        <p>{{ genre.description|linebreaks }}</p>
+    </div>
+    <div class="col-sm-6">
+        <ul class="card-columns">
+            {% for work in works %}
+            <li class="card">
+                <div class="card-body">
+                    <a href="/arts/works/{{ work.id }}">
+                        <img src="{{ work.image.url }}" alt="{{ work.title_jp">
+                        <div class="info">
+<p>&laquo; {{ work.title_jp }} &raquo;</p>
+<p>{{work.artist.name_jp}}</p>
+                        </div>
+
+                    </a>
+                </div>
+            </li>
+            {% endfor%}
+        </ul>
+    </div>
+</div>
+
+{% endblock %}

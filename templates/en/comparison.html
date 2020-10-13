@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'en/comparison/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <h1>My Classroom</h1>
+        <p>英語やスペイン語などの語学から世界史などを学びます。</p>
+    </div>
+
+</div>
+{% endblock %}
+{% block content %}
+
+<div>
+    <div class="comparison">
+        <h2 class="title">{{ comparison.term_1.name }} vs {{ comparison.term_2.name }}</h2>
+        <div class="overall-wrap">
+            <h2 class="overall">Overall Description</h2>
+            <div>{{ comparison.description|linebreaks }}</div>
+        </div>
+        <div class="comparison-terms row">
+
+
+
+            <div class="term-1 col">
+                <h5 class="term-title">{{ comparison.term_1.name }}</h5>
+                <p>{% if comparison.term_1_description %}
+            {{ comparison.term_1_description|linebreaks}}
+            {% endif %}
+            </p>
+                <div class="sentences">
+                    <ul class="sentence-list">
+                        {% for sentence in comparison.term_1.sentences_related.all %}
+                        <li class="sentence-item column">
+                            <div class="body col-12">{{ sentence.body|linebreaks }}</div>
+                            {% if sentence.image %}
+                            <img class="col-12" src="{{ sentence.image.url }}" alt="">
+                            {% else %}
+                            <img src="/static/common/noimage_vrt.png" alt="">
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+            </div>
+            <div class="middle-hr"></div>
+            <div class="term-2 col">
+                <h5 class="term-title">{{ comparison.term_2.name }}</h5>
+                <p>{% if comparison.term_2_description %}
+                    {{ comparison.term_2_description|linebreaks}}
+                    {% endif %}
+                    </p>
+                <div class="sentences">
+                    <ul class="sentence-list">
+                        {% for sentence in comparison.term_2.sentences_related.all %}
+                        <li class="sentence-item">{{ sentence.body|linebreaks }}</li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

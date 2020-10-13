@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'cuisine/dishes/style.scss' %}">
+{% endblock %}
+{% block title %}MY KITCHEN{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-text">
+        <div class="inner-text">
+            <h1>My Kitchen</h1>
+            <p>Explore Your Own Recipe</p>
+
+        </div>
+        <div class="searchBox">
+            <form method="GET" action="" id="searchform">
+                <input class="searchfield" id="searchbox" name="q" type="text" value="{{ request.GET.q }}" placeholder="Enter a keyword" />
+                <input type="submit" value="Search">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<h2>{{ ingredient.name_en }}</h2>
+{% endblock %}

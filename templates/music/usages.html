@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+{% load embed_video_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'music/artist/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+
+{% endblock %}
+{% block content %}
+
+{% include "components/alert.html" %}
+
+<section>
+    <div>
+        <ul class="tip-list">
+
+            {% for tip in usages %}
+            <li class="tip-item">
+                <a href="{% url 'music:usage' pk=tip.id %}">
+                    {{ tip.name }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+
+{% endblock %}

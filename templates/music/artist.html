@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sass_tags %}
+{% load embed_video_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'music/artist/style.scss' %}">
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block hero %}
+<div class="hero">
+    <div class="hero-content">
+        <div class="cover-wrap">
+            {% if artist.image %}
+            <img src=" {{ artist.image.url }}" alt="" class="artist image">
+            {% else %}
+            <img src="/static/common/noimage_hor.png" alt="" class="artist image">
+            {% endif %}
+        </div>
+        <div class="hero-text">
+            {% if artist_peak %}
+            <div class="artist-peak">
+
+                <h5 class="peak-rank">PEAK RANK: <span class="rank-num">#{{ artist_peak.rank }}</span> <span class="peak-date">at {{artist_peak.date }}</span></h5>
+
+
+
+            </div>
+            {% endif %}
+
+            <h1 class="hero-title"><a href="http://127.0.0.1:8000/admin/music/artist/{{artist.id}}/change/">{{ artist.name }}</a>{% if artist.country %}<img src="/static/image/{{artist.country}}.png" alt="{{artist.country}}" class="country-symbol">{%endif%}</h1>
+            {% if artist.alias %}
+            <span>({{ artist.alias }})</span>
+            {% endif %}
+        </div>
+        <div class="description">
+            <h5>LATEST HITS</h5>
+            <ul>
+                {% for track in chart_tracks|slice:':10' %}
+
+                <li><a href="{% url 'music:track' pk=track.id %}">[{{track.date|date:"Y-m-d" }}] <span class="rank">{{ track.peak }}</span> － {{ track.name }}</a></li>
+
+                {% empty %}
+                <p>No tracks on the charts</p>
+                {% endfor %}
+                {% if chart_tracks|length > 5  %}
+                <li class="more">See more</li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+{% include "components/alert.html" %}
+
+
+<div>
+    <div class="row">
+        <div class="tracks col-sm-12">
+            <h4>TRACKS</h4>
+            <section class="clips">
+                <ul class="row flex-wrap">
+                    {% for track in tracks %}
+                    {% if track.video %}
+                    <li class="col-sm-6 clip-item">
+                        <div>
+                            {% video track.video 'medium' %}
+                            <h5 class="clip-title">{{ track.name }}</h5>
+
+                        </div>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </section>
+            <ul class="row">
+                {% for track in tracks %}
+                <li class=" col-sm-4 track-plot">
+                    <div>
+                        <h6>{{ track.name }}</h6>
+                        <a href="{% url 'music:track_plot' pk=track.id %}">
+                            <img src="{% url 'music:track_plot' pk=track.id %}" alt="" class="plot">
+                        </a>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+
+
+
+
+
+</div>
+
+
+{% endblock %}
