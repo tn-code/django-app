@@ -153,47 +153,33 @@ def calc_cache_expiration():
     return expire_ttl
 
 
-def clean_track_data(tracks):
-    items = []
-    for track in tracks:
-        artists = []
-        for artist in track['artists']:
-            artists.append(artist['name'])
+def clean_track_data(track):
+    artists = [a['name'] for a in track['artists']]
 
-        # pk = Track.objects.get(spotify_id=track['id'])
-
-        track = {
-            # 'id':pk,
-            'spotify_id': track['id'],
-            'name': track['name'],
-            'image': track['album']['images'][0],
-            'artists': artists,
-            'date': track['album']['release_date'],
-            'album': track['album']['name']
-        }
-
-        items.append(track)
-
-    return items
+    track = {
+        'spotify_id': track['id'],
+        'name': track['name'],
+        'image': track['album']['images'][0],
+        'artists': artists,
+        'date': track['album']['release_date'],
+        'album': track['album']['name']
+    }
+    return track
 
 
-def clean_artist_data(artists):
-    items = []
-    for artist in artists:
-        instance = Artist.objects.get(spotify_id=artist['id'])
-        pk = instance.id
-        # Existing value in key 'id', which is given by Spotify, is now replaced with Artist instance primary key in order not to collid with each other referencing the same key
-        artist = {
-            'id': pk,
-            'spotify_id': artist['id'],
-            'name': artist['name'],
-            'image': artist['images'][0],
-            'genres': artist['genres'],
-            'followers': artist['followers']['total']
-        }
-        items.append(artist)
-
-    return items
+def clean_artist_data(artist):
+    instance = Artist.objects.get(spotify_id=artist['id'])
+    pk = instance.id
+    # Existing value in key 'id', which is given by Spotify, is now replaced with Artist instance primary key in order not to collid with each other referencing the same key
+    artist = {
+        'id': pk,
+        'spotify_id': artist['id'],
+        'name': artist['name'],
+        'image': artist['images'][0],
+        'genres': artist['genres'],
+        'followers': artist['followers']['total']
+    }
+    return artist
 
 
 def add_artist_position(artists, days):
@@ -210,9 +196,7 @@ def add_artist_position(artists, days):
     last_charts = Chart.objects.filter(date=last_date).exclude(artist=None)
 
     # Create a list of artists(dict) in the last chart
-    last_artists = []
-    for chart in last_charts:
-        last_artists.append(chart.artist)
+    last_artists = [c.artist for c in last_charts]
 
     positions = []
     # Check position of tracks one by one
@@ -277,9 +261,7 @@ def add_track_position(tracks, days):
     last_charts = Chart.objects.filter(date=last_date).exclude(track=None)
 
     # Create a list of tracks(dict) in the last chart
-    last_tracks = []
-    for chart in last_charts:
-        last_tracks.append(chart.track)
+    last_tracks = [c.track for c in last_charts]
 
     positions = []
     # Check position of tracks one by one
@@ -347,7 +329,7 @@ def fetch_spotify_data(request):
         save_track_chart_data(res)
 
         # Clean track data
-        cleaned_data = clean_track_data(res['items'])
+        cleaned_data = [clean_track_data(track) for track in res['items']]
 
         # Adding track positions
         # MEMO: Positions will only be cached without any database population
@@ -376,7 +358,7 @@ def fetch_spotify_data(request):
         save_artist_chart_data(res)
 
         # Clean artist data
-        cleaned_data = clean_artist_data(res['items'])
+        cleaned_data = [clean_artist_data(artist) for artist in res['items']]
 
         # Adding track positions
         # MEMO: Positions will only be cached without any database population
@@ -435,29 +417,30 @@ def charts(request):
         else:
             is_cached = False
             is_online = True
-
             fetch_spotify_data(request)
 
     reset_ttl = sec_to_datetime(cache.ttl('reset_track_chart'))
     reset_ttl2 = sec_to_datetime(cache.ttl('reset_artist_chart'))
-    new_tracks = []
-    for track in contents['top_tracks']:
-        if track['position'] == 'NEW':
-            new_tracks.append(track)
-        else:
-            pass
 
-    countries = []
-    for artist in Artist.objects.all().exclude(category__in=[1, 2]):
-        try:
-            if artist.country:
-                countries.append(artist.country)
-        except:
-            pass
+    new_tracks = [track for track in content['top_tracks']
+                  if track['position'] == "NEW"]
+
+    #
+    # for track in contents['top_tracks']:
+    #    if track['position'] == 'NEW':
+    #        new_tracks.append(track)
+    #    else:
+    #        pass
+
+    countries = [a.country for a in Artist.objects.all().exclude(
+        category__in=[1, 2]) if a.country]
+
     country_dict = collections.Counter(countries)
+
     # Convert dict to list that contains keys(country names)
-    country_list = list(country_dict)
-    country_count = len(country_list)
+    country_list, country_count = \
+        list(country_dict), len(country_list)
+
     track_count = Track.objects.all().count()
     artist_count = Artist.objects.all().exclude(category__in=[1, 2]).count()
 
@@ -477,36 +460,35 @@ def charts(request):
 
 
 def artists(request):
-    context = {}
-    artists = {}
-    crown_tracks = []
-    crown_artists = []
 
-    for chart in Chart.objects.filter(rank=1).exclude(track=None):
-        if chart.track in crown_tracks:
-            pass
-        else:
-            crown_tracks.append(chart.track)
-            for artist in chart.track.artists.all():
-                if artist in crown_artists:
-                    pass
-                else:
-                    crown_artists.append(artist)
+    def check_crowns():
+        top_charts = Chart.objects.filter(rank=1).exclude(track=None)
 
-    alphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-                 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-    for alpha in alphabets:
-        alpha_artists = Artist.objects.filter(name__istartswith=alpha).order_by(
-            'name').exclude(Q(category__in=[1, 2]) | Q(role=2))
-        for artist in alpha_artists:
-            if artist in crown_artists:
-                artist.crown = True
-            else:
-                artist.crown = False
-        artists[alpha] = alpha_artists
-    context['artists'] = artists
-    context['inst_artists'] = Artist.objects.filter(
+        # comprehension set to filter out duplicates
+        tracks = {chart.track for chart in top_charts}
+        artists = {artist for track in tracks for artist in track.artists.all()}
+
+        # return multiple values as a tuple
+        return tracks, artists
+
+    # multiple assignment and tuple unpacking
+    crown_tracks, crown_artists = check_crowns()
+
+    # TODO: Implement crown
+
+    alphabets = list("abcdefghijklmnopqrstuvwxyz")
+
+    # dict comprehension to sort data by alphabets
+    artists = {alpha: Artist.objects.filter(name__istartswith=alpha).order_by(
+        'name').exclude(Q(category__in=[1, 2]) | Q(role=2)) for alpha in alphabets}
+
+    inst_artists = Artist.objects.filter(
         Q(category__in=[1, 2]) | Q(role=2)).order_by('name')
+
+    context = {
+        'artists': artists,
+        'inst_artists': inst_artists
+    }
 
     return render(request, 'music/artists.html', context)
 
@@ -768,7 +750,7 @@ def plot_track_chart(request, pk):
 
         x1 = np.array(dates)
         y1 = np.array(ranks)
-        #y2 = np.array(dummy_ranks)
+        # y2 = np.array(dummy_ranks)
 
         # Initialize
         fig, ax = plt.subplots(figsize=(
@@ -804,7 +786,7 @@ def plot_track_chart(request, pk):
                 markeredgecolor='orange', alpha=0.8)
         ax.plot(x1, y2, 'w--', color="turquoise",
                 lw=1.5, alpha=0.8,    label='mean')
-        #ax.plot(x1, y2, 'r-', lw=2.5, alpha=0.6, label='theory')
+        # ax.plot(x1, y2, 'r-', lw=2.5, alpha=0.6, label='theory')
 
         response = fetch_plot_svg(fig)
 

@@ -7,15 +7,12 @@ from django.utils.safestring import mark_safe
 
 
 def get_image_path(self, filename):
-    return os.path.join('images', 'arts', self.__class__.__name__, self.name, filename)
-
-
-def get_work_image_path(self, filename):
-    return os.path.join('images', 'arts', self.title, filename)
-
-
-def get_design_image_path(self, filename):
-    return os.path.join('images', 'arts', self.__class__.__name__, self.category, filename)
+    if self.__class__.__name__ == 'Work':
+        return os.path.join('images', 'arts', self.title, filename)
+    elif self.__class__.__name__ == 'Design':
+        return os.path.join('images', 'arts', self.__class__.__name__, self.category, filename)
+    else:
+        return os.path.join('images', 'arts', self.__class__.__name__, self.name, filename)
 
 
 class Museum(models.Model):
@@ -114,7 +111,7 @@ class Work(models.Model):
         Artist, blank=True, null=True, on_delete=models.PROTECT)
     description = models.TextField(blank=True, null=True)
     image = models.ImageField(
-        upload_to=get_work_image_path, blank=True, null=True)
+        upload_to=get_image_path, blank=True, null=True)
     comment = models.TextField(blank=True, null=True)
     creation_date = models.IntegerField(
         validators=[MinValueValidator(0), MaxValueValidator(2020)], blank=True, null=True)
@@ -145,7 +142,7 @@ class Design(models.Model):
     name = models.CharField(max_length=128, blank=True, null=True)
     designer = models.CharField(max_length=128, blank=True, null=True)
     image = models.ImageField(
-        upload_to=get_design_image_path, blank=True, null=True)
+        upload_to=get_image_path, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     tags = models.ManyToManyField(Tag, related_name="%(class)ss", blank=True)
 

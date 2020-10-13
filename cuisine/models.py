@@ -23,7 +23,7 @@ class Season(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(12)], blank=True, null=True)
 
     def __str__(self):
-        return str(self.id) + '. ' + self.name
+        return "{0}. {1}".format(str(self.id), self.name)
 
     class Meta:
         verbose_name = 'Season'
@@ -76,7 +76,7 @@ class Food(models.Model):
                                       choices=CLASSIFICATION_CHOICES, blank=True, null=True)
 
     def __str__(self):
-        return self.name_en + ' －' + self.name
+        return "{0} - {1}".format(self.name_en, self.name)
 
     class Meta:
         verbose_name = 'Food'
@@ -88,7 +88,7 @@ class DishType(models.Model):
     name = models.CharField(max_length=64)
 
     def __str__(self):
-        return str(self.id) + '. ' + self.name
+        return "{0}. {1}".format(str(self.id), self.name)
 
     class Meta:
         verbose_name = 'Dish Type'
@@ -102,7 +102,7 @@ class Article(models.Model):
         Food, related_name='%(class)ses', blank=True)
 
     def __str__(self):
-        return str(self.id) + '. ' + self.title
+        return "{0}. {1}".format(str(self.id), self.title)
 
     class Meta:
         verbose_name = 'Article'
@@ -117,7 +117,11 @@ class ArticleImage(models.Model):
     caption = models.CharField(max_length=128, blank=True, null=True)
 
     def __str__(self):
-        return str(self.id) + '. ' + self.article.title + ' [' + str(self.created_at) + ']'
+        return "{id}. {title} [{date}]".format(
+            id=str(self.id),
+            title=self.article.title,
+            date=str(self.created_at)
+        )
 
     class Meta:
         verbose_name = 'Article Image'
@@ -142,7 +146,7 @@ class Dish(models.Model):
 
     def __str__(self):
         if self.type:
-            return self.name_alpha + ' [' + self.type.name + ']'
+            return "{0} [{1}]".format(self.name_alpha, self.type.name)
         else:
             return self.name_alpha
 
@@ -159,7 +163,11 @@ class DishImage(models.Model):
     created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.id) + '. ' + self.dish.name + ' [' + str(self.created_at) + ']'
+        return "{id}. {name} [{date}]".format(
+            id=str(self.id),
+            name=self.dish.name,
+            date=str(self.created_at)
+        )
 
     class Meta:
         verbose_name = 'Dish Image'
@@ -176,7 +184,12 @@ class Recipe(models.Model):
     tip = models.CharField(max_length=256, blank=True, null=True)
 
     def __str__(self):
-        return str(self.id) + '. ' + self.dish.name_alpha + ' － (' + str(self.order) + ')' + self.body[:20]
+        return "{id}. {name} - ({order}) {body}".format(
+            id=str(self.id),
+            name=self.dish.name_alpha,
+            order=str(self.order),
+            body=self.body[:20]
+        )
 
     class Meta:
         verbose_name = 'Recipe'
@@ -189,7 +202,7 @@ class IngredientGroup(models.Model):
         Dish, on_delete=models.CASCADE, related_name='%(class)ss')
 
     def __str__(self):
-        return self.dish.name_alpha + ' : ' + self.name
+        return "{0} : {1}".format(self.dish.name_alpha, self.name)
 
     class Meta:
         verbose_name = 'IngredientGroup'
@@ -234,11 +247,16 @@ class Ingredient(models.Model):
         Food, related_name='alternatives', blank=True)
 
     def __str__(self):
-        return str(self.id) + '. ' + self.dish.name_alpha + '－' + self.food.name_en
+        return "{id}. {dish} - {food}".format(
+            id=str(self.id),
+            dish=self.dish.name_alpha,
+            food=self.food.name_en
+        )
 
     class Meta:
         verbose_name = 'Ingredient'
         verbose_name_plural = 'Ingredients'
+
         constraints = [
             models.UniqueConstraint(
                 fields=['dish', 'food', 'group'], name='unique_food_ingredient'),
@@ -259,7 +277,11 @@ class Tea(models.Model):
     tasted_count = models.IntegerField(default=0)
 
     def __str__(self):
-        return str(self.id) + '. ' + self.name + ' － ' + self.brand
+        return "{id}. {name} - {brand}".format(
+            id=str(self.id),
+            name=self.name,
+            brand=self.brand
+        )
 
     class Meta:
         verbose_name = 'Tea'

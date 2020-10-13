@@ -52,23 +52,20 @@ def category(request, pk):
     medicines = Medicine.objects.order_by('name').filter(category=pk)
     categories = Category.objects.all()
     category = Category.objects.get(id=pk)
-    ingredient_list = []
-    ingredient_pk = []
 
-    for medicine in medicines:
-        for ingredient in medicine.ingredients.all():
-            if ingredient.id in ingredient_pk:
-                pass
-            else:
-                ingredient_pk.append(ingredient.id)
-                ingredient_list.append(ingredient)
+    # set comprehension to collect all ingredients without duplicates.
+    ingredient_set = {i for m in medicines for i in m.ingredients.all()}
+
+    ingredient_list = list(ingredient_set)
     random.shuffle(ingredient_list)
+
     context = {
         'medicines': medicines,
         'category': category,
         'categories': categories,
         'ingredients': ingredient_list
     }
+
     return render(request, 'pharmacy/categories.html', context)
 
 

@@ -5,11 +5,10 @@ from django.db import models
 
 
 def get_image_path(self, filename):
-    return os.path.join('images', 'lib', self.__class__.__name__, self.name, filename)
-
-
-def get_quote_image_path(self, filename):
-    return os.path.join('images', 'lib', str(self.id) + '. ' + self.body[:10], filename)
+    if self.__class__.__name__ == 'Quote':
+        return os.path.join('images', 'lib', str(self.id) + '. ' + self.body[:10], filename)
+    else:
+        return os.path.join('images', 'lib', self.__class__.__name__, self.name, filename)
 
 
 class Category(models.Model):
@@ -81,7 +80,7 @@ class Quote(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     comment = models.TextField(blank=True, null=True)
     image = models.ImageField(
-        upload_to=get_quote_image_path, blank=True, null=True)
+        upload_to=get_image_path, blank=True, null=True)
     terminologies = models.ManyToManyField(
         Terminology, related_name="%(class)ss_related", blank=True)
     quotes = models.ManyToManyField('self', verbose_name="関連引用", blank=True,

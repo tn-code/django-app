@@ -369,13 +369,12 @@ def memos(request):
 def getFig():
     today = datetime.date.today()
     year = today.year
-    nums = []
-    for i in range(1, 13):
-        nums.append(str(i).zfill(2))
-    list_purchased = [Book.objects.filter(purchased_at__year=year).filter(purchased_at__month=i).count()
-                      for i in nums]
-    list_read = [Book.objects.filter(purchased_at__year=year).filter(read_at__month=i).count()
-                 for i in nums]
+    nums = [str(i).zfill(2) for i in range(1, 13)]
+
+    list_purchased = [Book.objects.filter(purchased_at__year=year).filter(
+        purchased_at__month=i).count() for i in nums]
+    list_read = [Book.objects.filter(purchased_at__year=year).filter(
+        read_at__month=i).count() for i in nums]
     months = np.array(['Jan', 'Feb', 'Mar', 'Apr', 'May',
                        'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
     purchased = np.array(list_purchased)

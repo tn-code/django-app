@@ -29,71 +29,61 @@ dishes_query = (Q(type=8) | Q(type=9) | Q(type=10))
 
 
 def search(request):
-    if request.method == 'GET':
-        if request.GET.get('q'):
-            q = request.GET.get('q')
-            try:
-                foods = Food.objects.filter(name__contains=q)
-                dishes_ls = []
-                for food in foods:
-                    dishes_ls.append(food.dishes.all())
+    if request.method == 'GET' and request.GET.get('q'):
+        q = request.GET.get('q')
+        foods = Food.objects.filter(name__contains=q)
+        dishes_ls = [f.dishes.all() for f in foods if foods]
 
-            except:
-                dishes_ls = None
-                foods = None
-
-            return render(request, 'cuisine/search.html',
-                          {
-                              'title': '「' + q + '」の検索結果',
-                              'dishes_ls': dishes_ls,
-                              'query': q,
-                              'foods': foods
-                          })
+        return render(request, 'cuisine/search.html',
+                      {
+                          'title': '「' + q + '」の検索結果',
+                          'dishes_ls': dishes_ls,
+                          'query': q,
+                          'foods': foods
+                      })
 
 
 def index(request):
     total = Dish.objects.all().count()
     memos = Memo.objects.filter(category='CUISINE').order_by('?')[:5]
+
     if request.method == 'GET':
         if request.GET.get('q'):
             q = request.GET.get('q')
-            try:
-                foods = Food.objects.filter(name__contains=q)
-                dishes_ls = []
-                for food in foods:
-                    dishes_ls.append(food.dish_set.all())
+            foods = Food.objects.filter(name__contains=q)
+            dishes_ls = [f.dish_set.all() for f in foods if foods]
 
-            except:
-                dishes_ls = None
-                foods = None
+            context = {
+                'title': '「' + q + '」の検索結果',
+                'dishes_ls': dishes_ls,
+                'query': q,
+                'foods': foods
+            }
 
-            return render(request, 'cuisine/search.html',
-                          {
-                              'title': '「' + q + '」の検索結果',
-                              'dishes_ls': dishes_ls,
-                              'query': q,
-                              'foods': foods
-                          })
+            return render(request, 'cuisine/search.html', context)
+
         else:
             dishes = Dish.objects.all().order_by('-id')[:4]
             month = date.today().strftime('%B')
             seasonal_foods = Food.objects.filter(season__name=month).first()
-
             if seasonal_foods:
                 seasonals = Dish.objects.filter(
                     foods__name__contains=seasonal_foods.name).order_by('?')[:5]
             else:
                 seasonals = []
-            return render(request, 'cuisine/index.html',
-                          {
-                              'title': 'Cuisine',
-                              'dishes': dishes,
-                              'seasonals': seasonals,
-                              'month': month,
-                              'seasonal_foods': seasonal_foods,
-                              'memos': memos,
-                              'total': total
-                          })
+
+            context = {
+                'title': 'Cuisine',
+                'dishes': dishes,
+                'seasonals': seasonals,
+                'month': month,
+                'seasonal_foods': seasonal_foods,
+                'memos': memos,
+                'total': total
+            }
+
+            return render(request, 'cuisine/index.html', context)
+
     else:
         dishes = Dish.objects.all().order_by(
             '-id').exclude(dishes_query)[:4]
@@ -101,15 +91,17 @@ def index(request):
         seasonal_foods = Food.objects.filter(season__name=month).first()
         seasonals = Dish.objects.filter(
             foods__name__contains=seasonal_foods.name).order_by('?')[:5]
-        return render(request, 'cuisine/index.html',
-                      {
-                          'title': 'Cuisine',
-                          'dishes': dishes,
-                          'seasonals': seasonals,
-                          'month': month,
-                          'seasonal_foods': seasonal_foods,
-                          'memos': memos
-                      })
+
+        context = {
+            'title': 'Cuisine',
+            'dishes': dishes,
+            'seasonals': seasonals,
+            'month': month,
+            'seasonal_foods': seasonal_foods,
+            'memos': memos
+        }
+
+        return render(request, 'cuisine/index.html', context)
 
 
 def add_dish(request):
@@ -249,17 +241,9 @@ def dish_count(request, pk):
 
 
 def get_types(dishes):
-    items = []
-    for dish in dishes:
-        try:
-            if dish.type:
-                items.append(dish.type.name)
-        except:
-            pass
-
+    items = [d.type.name for d in dishes if d.type]
     # Counter returns a dict with given value as keys and numbers as values
     collection = collections.Counter(items)
-
     return collection
 
 

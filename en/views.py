@@ -1,6 +1,9 @@
 import random
 import datetime
 import json
+import sqlite3
+import pandas as pd
+from django_pandas.io import read_frame
 
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
@@ -14,6 +17,10 @@ from django.utils.html import format_html
 from .forms import TermForm, SentenceForm, SynonymForm
 from .models import Term, Comparison, Synonym, Definition, Sentence, Genre, Occasion, Derivative, Collocation, Usage, Grammar, Line, Dialogue
 
+
+# def export_csv(request):
+#    qs = Term.objects.all()
+#    df = read_frame(qs, fieldnames=['name','type'])
 
 def index(request):
 
@@ -31,16 +38,14 @@ def index(request):
         todays_terms = todays
     except:
         todays_terms = None
-    random_list = []
-    for item in Sentence.objects.all().exclude(image=None).order_by('?'):
-        random_list.append(item.id)
+    random_list = [item.id for item in Sentence.objects.all().exclude(
+        image=None).order_by('?')]
     random.shuffle(random_list)
     if len(random_list) != 0:
         pickup_id = random_list[0]
         pickup = Sentence.objects.get(id=pickup_id)
     else:
         pickup = None
-
     count = Sentence.objects.all().exclude(image=None).count()
 
     total = Term.objects.all().count() - Term.objects.filter(type='TEMPLATE').count()
@@ -111,6 +116,7 @@ def term(request, pk):
     for definition in definition_instances:
         id = definition.id
         definition_list.append(definition)
+
         collocation = Collocation.objects.filter(definition=id)
         if collocation:
             collocations.append(collocation)
@@ -155,8 +161,7 @@ def lexicon(request):
     basics = {}
     compounds = {}
 
-    alphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-                 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+    alphabets = list("abcdefghijklmnopqrstuvwxyz")
 
     for alpha in alphabets:
         word = Term.objects.filter(name__istartswith=alpha).filter(
@@ -503,38 +508,29 @@ def create_basic_quiz(term):
     term['question'] = 'Select a word that matches to the definition(s) below.'
 
     # adding the first definition
-    definition_list = []
-    definitions = Definition.objects.filter(
-        term=term['id']).values()
+    definitions, sentences = \
+        Definition.objects.filter(term=term['id']).values(), \
+        Sentence.objects.filter(term=term['id']).values()
 
-    for definition in definitions:
-        definition_list.append(definition['definition'])
+    definition_list = [d['definition'] for d in definitions]
+    sentence_list = [s for s in sentences]
 
     random.shuffle(definition_list)
-    term['definitions'] = definition_list
-
-    sentence_list = []
-    sentences = Sentence.objects.filter(
-        term=term['id']).values()
-
-    for sentence in sentences:
-
-        sentence_list.append(sentence)
     random.shuffle(sentence_list)
+
+    term['definitions'] = definition_list
     term['sentences'] = sentence_list
 
     # Creating choices
-    choices = []
+
     query = Q(is_basic=False) | (Q(is_basic=True) and Q(is_advanced=True))
-    id_list = []
+
     id_list = Term.objects.filter(query).values_list('id', flat=True)
+
+    random_ids = [random.choice(id_list) for i in range(0, 3)]
+    choices = [Term.objects.get(id=id).name
+               for id in random_ids if Term.objects.get(id=id)]
     choices.append(term['name'])
-    for i in range(0, 3):
-        random_id = random.choice(id_list)
-        if Term.objects.get(id=random_id):
-            choices.append(Term.objects.get(id=random_id).name)
-        else:
-            pass
 
     random.shuffle(choices)
     term['choices'] = choices
@@ -549,23 +545,18 @@ def create_sentence_quiz(term):
 
     term['question'] = 'Select a word that matches to the sentence below.'
 
-    sentence_list = []
     sentences = Sentence.objects.filter(
         term=term['id']).values()
 
-    for sentence in sentences:
-
-        sentence_list.append(sentence)
+    sentence_list = [s for s in sentences]
     random.shuffle(sentence_list)
     term['sentences'] = sentence_list
 
     # adding the first definition
-    definition_list = []
+
     definitions = Definition.objects.filter(
         term=term['id']).values()
-
-    for definition in definitions:
-        definition_list.append(definition['definition'])
+    definition_list = [d['definition'] for d in definitions]
     term['definitions'] = definition_list
 
     # Creating choices

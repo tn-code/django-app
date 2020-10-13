@@ -9,13 +9,7 @@ from django.db.models.functions import Lower
 
 
 def get_image_path(self, filename):
-    if hasattr(self, 'name'):
-        return os.path.join('images', 'en', self.__class__.__name__, self.name, filename)
-    elif hasattr(self, 'speaker'):
-        return os.path.join('images', 'en', self.__class__.__name__, self.speaker, filename)
-    elif hasattr(self, 'title'):
-        return os.path.join('images', 'en', self.__class__.__name__, str(self.id), filename)
-    else:
+    if self.__class__.__name__ == 'Sentence':
         if self.is_generic == True:
             return os.path.join('images', 'en', self.__class__.__name__, "generic", str(self.id), filename)
         else:
@@ -28,6 +22,15 @@ def get_image_path(self, filename):
             else:
                 raise ValidationError(
                     'Something went wrong while uploading the image.')
+    else:
+        if hasattr(self, 'name'):
+            return os.path.join('images', 'en', self.__class__.__name__, self.name, filename)
+        elif hasattr(self, 'speaker'):
+            return os.path.join('images', 'en', self.__class__.__name__, self.speaker, filename)
+        elif hasattr(self, 'title'):
+            return os.path.join('images', 'en', self.__class__.__name__, str(self.id), filename)
+        else:
+            return 'Error occured while setting an image path'
 
 
 class Dialect(models.Model):

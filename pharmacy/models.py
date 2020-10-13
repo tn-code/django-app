@@ -6,52 +6,40 @@ from embed_video.fields import EmbedVideoField
 from django.utils.safestring import mark_safe
 from django.core.exceptions import ValidationError
 
+attr_list = [
+    'medicine',
+    'ingredient',
+    'term',
+    'disease',
+    'property',
+    'symptom',
+]
+
 
 def get_image_path(self, filename):
     if self.__class__.__name__ == 'ReferenceImage':
-        key_list = [
-            self.medicine,
-            self.ingredient,
-            self.term,
-            self.disease,
-            self.property,
-            self.symptom,
-            self.category
-        ]
+        # set a correct path for an image
+        def set_variable_path():
+            i = 0
+            while i < len(attr_list):
+                target = getattr(self, attr_list[i])
+                if target:
+                    return os.path.join('images', 'pharmacy', 'references', attr_list[i], getattr(target, 'name'), filename)
+                else:
+                    i += 1
 
-        attr_list = [
-            'medicine',
-            'ingredient',
-            'term',
-            'disease',
-            'property',
-            'symptom',
-            'category'
-        ]
+        return set_variable_path()
 
-        def recursive(i):
-            if key_list[i]:
-                return os.path.join('images', 'pharmacy', 'references', attr_list[i], key_list[i].name, filename)
-            else:
-                i += 1
-                return recursive(i)
-
-        return recursive(0)
-
-    elif hasattr(self, "name"):
-        return os.path.join('images', 'pharmacy', self.__class__.__name__, self.name, filename)
-    elif hasattr(self, "medicine"):
-        return os.path.join('images', 'pharmacy', self.__class__.__name__, self.medicine.name, filename)
-    elif hasattr(self, "term"):
-        return os.path.join('images', 'pharmacy', self.__class__.__name__, self.term.name, filename)
-    elif hasattr(self, "symptom"):
-        return os.path.join('images', 'pharmacy', self.__class__.__name__, self.symptom.name, filename)
-    elif hasattr(self, "disease"):
-        return os.path.join('images', 'pharmacy', self.__class__.__name__, self.disease.name, filename)
-    elif hasattr(self, "category"):
-        return os.path.join('images', 'pharmacy', self.__class__.__name__, self.category.name, filename)
     else:
-        return os.path.join('images', 'pharmacy', self.__class__.__name__, filename)
+        for attr in attr_list:
+            # pick up 'name' attribute of a related object
+            if hasattr(self, attr):
+                return os.path.join('images', 'pharmacy', self.__class__.__name__, getattr(getattr(self, attr), 'name'), filename)
+            # when object itself has an 'name' attribute
+            elif hasattr(self, 'name'):
+                return os.path.join('images', 'pharmacy', self.__class__.__name__, self.name, filename)
+            else:
+                return 'Failed to set an image path.'
 
 
 class Effect(models.Model):
@@ -264,9 +252,9 @@ class Description(models.Model):
 
     def __str__(self):
         if self.related_ingredient.name:
-            return str(self.id) + '. ' + self.related_ingredient.name
+            return "{0}. {1}".format(str(self.id), self.related_ingredient.name)
         else:
-            return str(self.id) + '. ' + self.body[:60]
+            return "{0}. {1}".format(str(self.id), self.body[:60])
 
     class Meta:
         verbose_name = 'Description'
@@ -280,16 +268,25 @@ class RelatedIngredient(models.Model):
         'Ingredient', on_delete=models.CASCADE, related_name='related')
 
     def __str__(self):
-        return str(self.id) + '. ' + self.related.name + '－' + self.base.name
+        return "{id}. {related} - {base}".format(
+            id=str(self.id),
+            related=self.related.name,
+            base=self.base.name
+        )
 
     class Meta:
         verbose_name = 'Related Ingredient'
         verbose_name_plural = 'Related Ingredients'
+
+        # NOTE: making A-B and B-A combination treated as the same to prevent duplication.
+        # Doesn't matter which one goes to which in terms of mutuality
         constraints = [
             models.UniqueConstraint(
                 fields=['base', 'related'], name='unique_related'),
         ]
 
+    # override methods for mutual relationships
+    # NOTE: when A-B relationship is built/deleted, so is B-A.
     def save(self, *args, **kwargs):
         self.related.relationships.add(self.base)
         super(RelatedIngredient, self).save(*args, **kwargs)
@@ -305,7 +302,7 @@ class Summary(models.Model):
         'Ingredient', on_delete=models.CASCADE, related_name='%(class)s')
 
     def __str__(self):
-        return str(self.id) + '. ' + self.ingredient.name
+        return "{0}. {1}".format(str(self.id), self.ingredient.name)
 
     class Meta:
         verbose_name = 'Summary'
@@ -365,16 +362,16 @@ class Ingredient(models.Model):
 
     def __str__(self):
         if self.name_en:
-            return self.name + ' - ' + self.name_en
+            return "{0} - {1}".format(self.name, self.name_en)
         else:
             return self.name
 
+    # allow images to be shown on the admin page
     def admin_image(self):
         if self.image:
             return mark_safe('<img src="{}" style="width:100px; height:auto;">'.format(self.image.url))
         else:
             return 'no image'
-
     admin_image.allow_tags = True
 
     class Meta:
@@ -391,7 +388,11 @@ class IngredientImage(models.Model):
     caption = models.CharField(max_length=128, blank=True, null=True)
 
     def __str__(self):
-        return str(self.id) + '. ' + self.ingredient.name + ' [' + str(self.created_at) + ']'
+        return "{id}. {name} [{date}]".format(
+            id=str(self.id),
+            name=self.ingredient.name,
+            date=str(self.created_at)
+        )
 
     class Meta:
         verbose_name = 'Ingredient Image'
@@ -405,16 +406,25 @@ class RelatedMedicine(models.Model):
         'Medicine', on_delete=models.CASCADE, related_name='related')
 
     def __str__(self):
-        return str(self.id) + '. ' + self.related.name + '－' + self.base.name
+        return "{id}. {related} - {base}".format(
+            id=str(self.id),
+            related=self.related.name,
+            base=self.base.name
+        )
 
     class Meta:
         verbose_name = 'Related Medicine'
         verbose_name_plural = 'Related Medicines'
+
+        # NOTE: making A-B and B-A combination treated as the same to prevent duplication.
+        # Doesn't matter which one goes to which in terms of mutuality
         constraints = [
             models.UniqueConstraint(
                 fields=['base', 'related'], name='unique_related'),
         ]
 
+    # override methods for mutual relationships
+    # NOTE: when A-B relationship is built/deleted, so is B-A.
     def save(self, *args, **kwargs):
         self.related.relationships.add(self.base)
         super(RelatedMedicine, self).save(*args, **kwargs)
@@ -476,7 +486,11 @@ class Medicine(models.Model):
 
     def __str__(self):
         if self.publisher:
-            return str(self.id) + '. ' + self.name + ' － ' + self.publisher
+            return "{id}. {name} - {publisher}".format(
+                id=str(self.id),
+                name=self.name,
+                publisher=self.publisher
+            )
         else:
             return str(self.id) + '. ' + self.name
 
@@ -494,7 +508,11 @@ class MedicineImage(models.Model):
     caption = models.CharField(max_length=128, blank=True, null=True)
 
     def __str__(self):
-        return str(self.id) + '. ' + self.medicine.name + ' [' + str(self.created_at) + ']'
+        return "{id}. {name} [{date}]".format(
+            id=str(self.id),
+            name=self.medicine.name,
+            date=str(self.created_at)
+        )
 
     class Meta:
         verbose_name = 'Medicine Image'
@@ -528,7 +546,11 @@ class Term(models.Model):
                                       choices=CLASSIFICATION_CHOICES, blank=True, null=True)
 
     def __str__(self):
-        return str(self.id) + '. ' + self.name + ' - ' + self.name_en
+        return "{id}. {jp} - {en}".format(
+            id=str(self.id),
+            jp=self.name,
+            en=self.name_en
+        )
 
     class Meta:
         verbose_name = 'Term'
@@ -544,7 +566,11 @@ class TermImage(models.Model):
     caption = models.CharField(max_length=128, blank=True, null=True)
 
     def __str__(self):
-        return str(self.id) + '. ' + self.term.name + ' [' + str(self.created_at) + ']'
+        return "{id}. {name} [{date}]".format(
+            id=str(self.id),
+            name=self.term.name,
+            date=str(self.created_at)
+        )
 
     class Meta:
         verbose_name = 'Term Image'
@@ -604,12 +630,19 @@ class Article(models.Model):
     memo = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return str(self.id) + '. ' + self.name + ' - [' + self.law.name[:40] + ']'
+        return "{id}. {name} - [{law}]".format(
+            id=str(self.id),
+            name=self.name,
+            law=self.law.name[:40]
+        )
 
     class Meta:
         verbose_name = 'Article'
         verbose_name_plural = 'Articles'
 
+
+# Class that contains images attached to every models
+# TODO: comtemplate if this is more suitable rather than creating relating Image models one by one.
 
 class ReferenceImage(models.Model):
     medicine = models.ForeignKey(
@@ -629,33 +662,27 @@ class ReferenceImage(models.Model):
     caption = models.CharField(max_length=128, blank=True, null=True)
 
     def __str__(self):
-        key_list = [
-            self.medicine,
-            self.ingredient,
-            self.term,
-            self.disease,
-            self.property,
-            self.symptom
-        ]
-
-        def recursive(i):
-            if i < 6:
-                if key_list[i]:
-                    return str(key_list[i].id) + '. ' + key_list[i].name
-                elif key_list[i] is None:
+        # return the right caption attached to an image.
+        def showObjectName(i):
+            while i < len(attr_list):
+                target = getattr(self, attr_list[i])
+                if target:
+                    return "{id}. {name}".format(
+                        id=getattr(target, 'id'),
+                        name=getattr(target, 'name')
+                    )
+                elif target is None:
                     i += 1
-                    return recursive(i)
                 else:
-                    return 'Something is wrong.'
-            else:
-                return 'All None'
+                    return 'Something went wrong while populating the data'
 
-        return recursive(0)
+        return showObjectName(0)
 
     class Meta:
         verbose_name = 'Reference Image'
         verbose_name_plural = 'Reference Images'
 
+    # set validation to assure only one value is assigned.
     def clean(self):
         key_list = [
             self.medicine,
@@ -663,13 +690,13 @@ class ReferenceImage(models.Model):
             self.term,
             self.disease,
             self.property,
-            self.symptom
+            self.symptom,
         ]
-        if key_list.count(None) < 5:
+        if key_list.count(None) < len(key_list) - 1:
             raise ValidationError(
                 'Only 1 ForegnKey is allowed.')
         elif key_list.count(None) == len(key_list):
             raise ValidationError(
                 'No ForeignKey is selected. ')
         else:
-            pass
+            return 'Validation failed. Need to fix this exception right away.'
