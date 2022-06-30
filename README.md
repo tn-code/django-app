@@ -75,4 +75,10 @@ matplotlibを用いたグラフ描画でデータの可視化も実現。
 
 ![mpl3](https://user-images.githubusercontent.com/72479111/95816562-61905a00-0d5a-11eb-9839-14cda2c75fae.jpg)
 
+## その他
+
+SVGによるクリッカブルマップの実装
+![map](https://user-images.githubusercontent.com/72479111/176704316-ad273ed6-fc3a-4730-b16d-3d8c2ce6ee8e.jpg)
+
+
 ※ 掲載されているスクリーンショット内の画像及びアイコンは、一部を除いてのフリー素材配布サイトのものを利用しております。
