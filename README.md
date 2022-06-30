@@ -63,6 +63,8 @@ matplotlibを用いたグラフ描画でデータの可視化も実現。
 ### pharmacy
 ![pharmacy](https://user-images.githubusercontent.com/72479111/95816563-6228f080-0d5a-11eb-96c3-978d70b39935.jpg)
 
+### lib
+![lib](https://user-images.githubusercontent.com/72479111/176703271-ebbba498-751c-4eb7-bd23-6b71256da670.jpg)
 
 
 ## matplotlibによるグラフ描画例
